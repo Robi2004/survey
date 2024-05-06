@@ -19,7 +19,7 @@ class QuestionFactory extends Factory
     {
         return [
             'type' => $this->faker->unique()->lexify('QueType-???'),
-            'question' => $this->faker->unique()->lexify('QueTitle-???'),
+            'content' => $this->faker->unique()->lexify('QueTitle-???'),
             'id_survey' => Survey::inRandomOrder()->first(),
         ];
     }

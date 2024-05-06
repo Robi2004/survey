@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->longText('answer');
+            $table->longText('content');
             $table->foreignId('id_question')->constrained(table: 'questions')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });

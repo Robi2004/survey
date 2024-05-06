@@ -18,7 +18,7 @@ class AnswerFactory extends Factory
     public function definition(): array
     {
         return [
-            'answer' => $this->faker->unique()->lexify('Ans-???'),
+            'content' => $this->faker->unique()->lexify('Ans-???'),
             'id_question' => Question::inRandomOrder()->first(),
         ];
     }
