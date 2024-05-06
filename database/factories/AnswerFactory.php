@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Question;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,8 @@ class AnswerFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'answer' => $this->faker->unique()->lexify('Ans-???'),
+            'id_question' => Question::inRandomOrder()->first(),
         ];
     }
 }
