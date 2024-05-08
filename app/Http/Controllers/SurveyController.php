@@ -6,6 +6,9 @@ use App\Models\Survey;
 use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
 use App\Http\Resources\SurveyResource;
+use App\Models\Question;
+use App\Models\User;
+use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -25,7 +28,7 @@ class SurveyController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Post/CreatePost');
+        return Inertia::render('Survey/CreateSurvey');
     }
 
     /**
@@ -44,9 +47,12 @@ class SurveyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Survey $survey)
+    public function show($id)
     {
-        //
+        $survey = Survey::where('id', $id)->get(); // Paginate après avoir récupéré tous les articles
+        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+        $survey['question'] = Question::where('id_survey',$id)->get();
+        return Inertia::render('Survey/Survey', ['survey' => $survey]);
     }
 
     /**

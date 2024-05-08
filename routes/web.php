@@ -15,11 +15,12 @@ Route::get('/', function () {
 });
 
 
-Route::get('/dashboard', [SurveyController::class, 'index'])->name('surveys.index');
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys.index');
+    Route::get('/surveys/create', [SurveyController::class, 'create'])->name('surveys.create');
+    Route::get('/surveys/{id}', [SurveyController::class, 'show'])->name('surveys.show');
 });
