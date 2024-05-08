@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Survey;
 use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
+use App\Http\Resources\SurveyResource;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -15,8 +16,8 @@ class SurveyController extends Controller
      */
     public function index()
     {
-        $survey = Survey::paginate(12); // Paginate après avoir récupéré tous les articles
-        return Inertia::render('Visit', ['answers' => $survey]);
+        $surveys = SurveyResource::collection(Survey::paginate(12)); // Paginate après avoir récupéré tous les articles
+        return Inertia::render('Dashboard', ['surveys' => $surveys]);
     }
 
     /**
