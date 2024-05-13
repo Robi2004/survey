@@ -6,9 +6,11 @@ use App\Models\Survey;
 use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
 use App\Http\Resources\SurveyResource;
+use App\Models\Answer;
 use App\Models\Question;
 use App\Models\User;
-use FontLib\Table\Type\name;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -36,12 +38,29 @@ class SurveyController extends Controller
      */
     public function store(StoreSurveyRequest $request)
     {
-        $survey = Survey::create(array_merge($request->validated(), [
-            'content' => $request->content,
-            'user_id' => Auth::id(),
-        ]));
-
-        return redirect('/posts');   
+        if($request->hasFile('image')){
+            $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
+        }
+        $survey = Survey::create([
+            'title' => $request->title,
+            'image' => $path ?? null,
+            'id_user' => Auth::id(),
+        ]);
+        for($i=1; $i < count($request->contentQuestion);$i++) {
+            $question = Question::create([
+                'content' => $request->contentQuestion[$i], // Accéder à la propriété 'content' de chaque objet
+                'type' => $request->type[$i],
+                'id_survey' => $survey->id,
+            ]);
+            if(isset($request->contentAnswer[0][$i]))
+            for($x=1;$x < count($request->contentAnswer[0][$i]);$x++){
+                $answers = Answer::create([
+                    'content' => $request->contentAnswer[0][$i][$x],
+                    'id_question' => $question->id,
+                ]);
+            }
+        }
+        return redirect('/surveys/'.$survey->id);   
     }
 
     /**
@@ -51,7 +70,9 @@ class SurveyController extends Controller
     {
         $survey = Survey::where('id', $id)->get(); // Paginate après avoir récupéré tous les articles
         $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        $survey['question'] = Question::where('id_survey',$id)->get();
+        $survey['questions'] = Question::where('id_survey',$id)->get();
+        foreach($survey['questions'] as $question){
+            $survey['answer'] = Answer::where('id_question',$question->id);}
         return Inertia::render('Survey/Survey', ['survey' => $survey]);
     }
 
