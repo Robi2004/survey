@@ -88,7 +88,7 @@ const createSurvey = () =>{
                                     </template>
                                     <template #footer>
                                         <div class="mt-6 flex space-x-4">
-                                            <DangerButton @click="deletePost(CurrentElement.id)">Supprimer</DangerButton>
+                                            <DangerButton @click="deleteSurvey(CurrentElement.id)">Supprimer</DangerButton>
                                             <SecondaryButton @click="closeModal">Annuler</SecondaryButton>
                                         </div>
                                     </template>

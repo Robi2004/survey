@@ -22,7 +22,12 @@ Route::middleware([
 ])->group(function () {
     Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys.index');
     Route::get('/surveys/create', [SurveyController::class, 'create'])->name('surveys.create');
+    Route::get('/surveys/{id}/edit', [SurveyController::class, 'edit'])->name('surveys.edit');
+
     Route::get('/surveys/{id}', [SurveyController::class, 'show'])->name('surveys.show');
 
+    Route::post('/surveys/{id}', [SurveyController::class, 'update'])->name('surveys.update');
     Route::post('/surveys', [SurveyController::class, 'store'])->name('surveys.store');
+    
+    Route::delete('/surveys/{id}', [SurveyController::class, 'destroy'])->name('surveys.delete');
 });
