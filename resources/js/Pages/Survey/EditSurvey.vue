@@ -22,14 +22,22 @@ const question = reactive({
     type: [],
 }); // Ajouter l'id de la question pour le récup dans le controlleur
 
-const contentAnswer = reactive({
-    1:[], 2:[], 3:[], 4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[],14:[],15:[],16:[],17:[],18:[],19:[],20:[],});
+const answer = reactive({
+    id: [],
+    content: [],
+})
+
+const answerList = reactive({
+    1:[{id:[], content:[]}],2:[{id:[], content:[]}],3:[{id:[], content:[]}],4:[{id:[], content:[]}],5:[{id:[], content:[]}],
+    6:[{id:[], content:[]}],7:[{id:[], content:[]}],8:[{id:[], content:[]}],9:[{id:[], content:[]}],10:[{id:[], content:[]}],
+    11:[{id:[], content:[]}],12:[{id:[], content:[]}],13:[{id:[], content:[]}],14:[{id:[], content:[]}],15:[{id:[], content:[]}],
+    16:[{id:[], content:[]}],17:[{id:[], content:[]}],18:[{id:[], content:[]}],19:[{id:[], content:[]}],20:[{id:[], content:[]}],});
 
 const form = reactive({
     title: null,
     image: null,
     question : question,
-    contentAnswer : [contentAnswer],
+    answers : [answerList],
 });
 
 onBeforeMount(() => {
@@ -46,7 +54,8 @@ onBeforeMount(() => {
             numberAnswer[number] = props.survey.questions[number-1].answer.length;
             let i = 1;
             props.survey.questions[number-1].answer.forEach(answer => {
-                contentAnswer[number][i] = answer.content;
+                answerList[number][0].id[i] = answer.id;
+                answerList[number][0].content[i] = answer.content;
                 i++;
             });
         }
@@ -59,6 +68,25 @@ function submit (){
         for(let i = numberQuestion.number+1;i < 20;i++){
             question.id[i] = undefined;
             question.content[i] = undefined;
+            numberAnswer[i] = undefined;
+            answerList[i][0].id = undefined;
+            answerList[i][0].content = undefined;
+        }
+    }
+    for(let i = numberQuestion.number+1;i < 20;i++){
+        if(question.type[i] == "Text"){
+            answerList[i][0].id = undefined;
+            answerList[i][0].content = undefined;
+        }
+    }
+    for(let i = 1;i < 20;i++){
+        if(answerList[i][0].content != undefined){
+            if(answerList[i][0].content.length-1 != numberAnswer[i]){
+                for(let x = numberAnswer+1;x<20;x++){
+                    answerList[i][0].id[x] = undefined;
+                    answerList[i][0].content[x] = undefined;
+                }
+            }
         }
     }
     router.post('/surveys/'+props.survey[0].id, form);
@@ -79,6 +107,7 @@ function submit (){
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
                         <div class="container px-5 py-24 mx-auto">
                             <div class="flex flex-wrap -m-4">
+                                {{ answerList}}
                                 <form @submit.prevent="submit" class="container px-5 py-24 mx-auto">
                                     <div class="flex flex-col text-center w-full mb-12">
                                     <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Modifier le sondage : </h1>
@@ -132,7 +161,7 @@ function submit (){
                                             <div class="flex flex-wrap">
                                                 <div class="relative">
                                                     <label for="title" class="leading-7 text-sm text-gray-600">Réponse numéro {{ answer }}</label>
-                                                    <input type="text" id="title" name="title" v-model="contentAnswer[number][answer]" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <input type="text" id="title" name="title" v-model="answerList[number][0].content[answer]" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                                 </div>
                                             </div>
                                         </div>
