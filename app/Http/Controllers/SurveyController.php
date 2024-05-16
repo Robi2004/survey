@@ -9,7 +9,6 @@ use App\Http\Resources\SurveyResource;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\User;
-use App\Models\UserAnswer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Auth;
@@ -96,6 +95,8 @@ class SurveyController extends Controller
     public function update(UpdateSurveyRequest $request, $id)
     {
         $survey = Survey::find($id);
+        $survey->update();
+
         $questions = Question::where('id_survey',$id)->get();
         if($request->hasFile('image')){
             $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
@@ -103,23 +104,38 @@ class SurveyController extends Controller
                 Storage::disk('public')->delete($survey->image);
             $survey->image = $path;
         }
-        for($i=1; $i < count($request->contentQuestion);$i++) {
-            $question = Question::create([
-                'content' => $request->contentQuestion[$i], 
-                'type' => $request->type[$i],
-                'id_survey' => $survey->id,
-            ]);
-            if(isset($request->contentAnswer[0][$i]))
-            for($x=1;$x < count($request->contentAnswer[0][$i]);$x++){
-                $answers = Answer::create([
-                    'content' => $request->contentAnswer[0][$i][$x],
-                    'id_question' => $question->id,
-                ]);
+        foreach($questions as $question){
+            $exist = false;
+            for($i = 1; $i < count($request->question['id']); $i++){
+                if($request->question['id'][$i] == $question->id){
+                    $exist = true;
+                    $question->content = $request->question['content'][$i];
+                    $question->type = $request->question['type'][$i];
+                    $question->update();
+                }
+            }
+            if(!$exist){
+                $question->delete();
             }
         }
-        $survey->update();
+        if(count($request->question['id']) != count($request->question['content'])){
+            for($i = count($request->question['id']); $i < count($request->question['content']) ;$i++){
+                $question = Question::create([
+                    'content' => $request->question['content'][$i], 
+                    'type' => $request->question['type'][$i],
+                    'id_survey' => $survey->id,
+                ]);
+                if(isset($request->contentAnswer[0][$i])){
+                    for($x=1;$x < count($request->contentAnswer[0]->content[$i]);$x++){
+                        $answers = Answer::create([
+                            'content' => $request->contentAnswer[0]->content[$i][$x],
+                            'id_question' => $question->id,
+                        ]);
+                    }
+                }
+            }
+        }
         return redirect('/surveys/'.$survey->id);   
-        
     }
 
     /**

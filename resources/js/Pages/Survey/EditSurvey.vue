@@ -10,15 +10,17 @@ const props = defineProps({
 
 const numbers = ([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]);
 
-const typeOfQuestion = reactive([]);
-
 const numberQuestion = reactive({
     number: null,
 });
 
 const numberAnswer = reactive([]);
 
-const contentQuestion = reactive([]); // Ajouter l'id de la question pour le récup dans le controlleur
+const question = reactive({
+    id: [],
+    content: [],
+    type: [],
+}); // Ajouter l'id de la question pour le récup dans le controlleur
 
 const contentAnswer = reactive({
     1:[], 2:[], 3:[], 4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[],14:[],15:[],16:[],17:[],18:[],19:[],20:[],});
@@ -26,9 +28,8 @@ const contentAnswer = reactive({
 const form = reactive({
     title: null,
     image: null,
-    contentQuestion : contentQuestion,
+    question : question,
     contentAnswer : [contentAnswer],
-    type : typeOfQuestion,
 });
 
 onBeforeMount(() => {
@@ -39,8 +40,9 @@ onBeforeMount(() => {
             numberQuestion.number = number;
         }
         if(props.survey.questions.hasOwnProperty(number-1)){
-            contentQuestion[number] = props.survey.questions[number-1].content;
-            typeOfQuestion[number] = props.survey.questions[number-1].type;
+            question.id[number] = props.survey.questions[number-1].id;
+            question.content[number] = props.survey.questions[number-1].content;
+            question.type[number] = props.survey.questions[number-1].type;
             numberAnswer[number] = props.survey.questions[number-1].answer.length;
             let i = 1;
             props.survey.questions[number-1].answer.forEach(answer => {
@@ -53,6 +55,12 @@ onBeforeMount(() => {
 });
 
 function submit (){
+    if(question.content.length-1 != numberQuestion.number){
+        for(let i = numberQuestion.number+1;i < 20;i++){
+            question.id[i] = undefined;
+            question.content[i] = undefined;
+        }
+    }
     router.post('/surveys/'+props.survey[0].id, form);
 };
 
@@ -73,8 +81,8 @@ function submit (){
                             <div class="flex flex-wrap -m-4">
                                 <form @submit.prevent="submit" class="container px-5 py-24 mx-auto">
                                     <div class="flex flex-col text-center w-full mb-12">
-                                        {{ typeOfQuestion }}
-                                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Modifier </h1>
+                                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Modifier le sondage : </h1>
+                                    <h2 class="sm:text-2xl text-1xl font-medium title-font mb-4 text-gray-900">{{ survey[0].title }}</h2>
                                     </div>
                                     <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                     <div class="flex flex-wrap -m-2">
@@ -94,7 +102,7 @@ function submit (){
                                         <div class="p-2 w-full">
                                             <div class="relative">
                                                 <label for="NumberQuestion" class="leading-7 text-sm text-gray-600">Combien de questions shouaitez vous poser ?</label>
-                                                <select v-model="numberQuestion.number" type="select" id="numberQuestion" name="numberQuestion" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                <select v-model="numberQuestion.number" id="numberQuestion" name="numberQuestion" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                                     <option v-for="number in numbers" v-bind:value="number">{{ number }}</option>
                                                 </select>
                                             </div>
@@ -103,20 +111,20 @@ function submit (){
                                         <label for="TypeQuestion" class="leading-7 text-sm text-gray-600">De quel type est votre question ?</label>
                                             <div class="flex flex-wrap">
                                             <div class="p-2 w-1/3">
-                                                <input v-model="typeOfQuestion[number]" type="radio" inputId="Text" :name="'TypeQuestion' + number" value="Text" />
+                                                <input v-model="question.type[number]" type="radio" inputId="Text" :name="'TypeQuestion' + number" value="Text" />
                                                 <label for="Text" class="ml-2">Text</label>
                                             </div>
                                             <div class="p-2 w-1/3">
-                                                <input v-model="typeOfQuestion[number]" type="radio" inputId="Select" :name="'TypeQuestion' + number" value="Select" />
+                                                <input v-model="question.type[number]" type="radio" inputId="Select" :name="'TypeQuestion' + number" value="Select" />
                                                 <label for="Select" class="ml-2">Select box</label>
                                             </div>
                                             <div class="p-2 w-1/3">
-                                                <input v-model="typeOfQuestion[number]" type="radio" inputId="SelectMultiple" :name="'TypeQuestion' + number" value="SelectMultiple" />
+                                                <input v-model="question.type[number]" type="radio" inputId="SelectMultiple" :name="'TypeQuestion' + number" value="SelectMultiple" />
                                                 <label for="SelectMultiple" class="ml-2">Select Multiple box</label>
                                             </div>
-                                            <div class="p-2 w-full" v-if="typeOfQuestion[number] == 'Select' || typeOfQuestion[number] == 'SelectMultiple'">
+                                            <div class="p-2 w-full" v-if="question.type[number] == 'Select' || question.type[number] == 'SelectMultiple'">
                                                 <div class="p-2 w-1/6" >
-                                                    <select v-model="numberAnswer[number]" type="select" id="numberAnswer" name="numberAnswer" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <select v-model="numberAnswer[number]" id="numberAnswer" name="numberAnswer" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                                         <option v-for="number in numbers" v-bind:value="number">{{ number }}</option>
                                                     </select>
                                                 </div>
@@ -132,7 +140,7 @@ function submit (){
                                     </div>
                                     <div class="relative">
                                         <label for="title" class="leading-7 text-sm text-gray-600">Contenu de la question {{ number }}</label>
-                                        <input type="text" id="title" name="title" v-model="contentQuestion[number]" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                        <input type="text" id="title" name="title" v-model="question.content[number]" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                     </div>
                                     </div>
                                     <div class="p-2 w-full">
