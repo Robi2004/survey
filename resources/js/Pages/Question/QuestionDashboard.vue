@@ -12,41 +12,41 @@ import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
 defineProps({
-    surveys: Object,
+    questions: Object,
 });
 
-const showConfirmDeleteSurveyModal = ref(false)
+const showConfirmDeleteQuestionModal = ref(false)
 const CurrentElement = ref()
 
 const openModal = (item) => {
     CurrentElement.value = item;
-    showConfirmDeleteSurveyModal.value = true;
+    showConfirmDeleteQuestionModal.value = true;
 }
 
 const closeModal = () => {
-    showConfirmDeleteSurveyModal.value = false;
+    showConfirmDeleteQuestionModal.value = false;
 }
 
-const deleteSurvey = (id) =>{
-    router.delete('/surveys/'+id,{preserveScroll: true});
+const deleteQuestion = (id) =>{
+    router.delete('/questions/'+id,{preserveScroll: true});
     closeModal();
 };
 
-const showSurvey = (id) =>{
-    router.get('/surveys/'+id,);
+const showQuestion = (id) =>{
+    router.get('/questions/'+id,);
 };
 
-const editSurvey = (id) =>{
-    router.get('/surveys/'+id+'/edit',);
+const editQuestion = (id) =>{
+    router.get('/questions/'+id+'/edit',);
 };
 
-const createSurvey = () =>{
-    router.get('/surveys/create',);
+const createQuestion = () =>{
+    router.get('/questions/create',);
 };
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AppLayout title="QuestionDashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Dashboard
@@ -58,18 +58,18 @@ const createSurvey = () =>{
                     <section class="text-gray-600 body-font">
                         <div class="container px-5 py-24 mx-auto">
                             <div class="mx-44 mb-8 ">
-                                <PrimaryButton @click="createSurvey">Créer un sondage</PrimaryButton>
+                                <PrimaryButton @click="createQuestion">Créer une Question</PrimaryButton>
                             </div>
-                            <div v-if="surveys.data.length">
+                            <div v-if="questions.data.length">
                                 <div class="flex flex-col-reverse -m-4">
-                                    <div class="p-4 mx-44" :item v-for="item in surveys.data">
+                                    <div class="p-4 mx-44" :item v-for="item in questions.data">
                                         <div class="mh-25 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                             <div class="p-6 flex">
-                                                <p class="font-extrabold flex-auto md:w-1/3" :href="'/surveys/'+item.id">{{ item.title }}</p>
-                                                <button @click="showSurvey(item.id)" type="button">
+                                                <p class="font-extrabold flex-auto md:w-1/3" :href="'/questions/'+item.id">{{ item.content }}</p>
+                                                <button @click="showQuestion(item.id)" type="button">
                                                     <Show></Show>
                                                 </button> 
-                                                <button @click="editSurvey(item.id)" class="mx-2" type="button">
+                                                <button @click="editQuestion(item.id)" class="mx-2" type="button">
                                                     <Edit></Edit>
                                                 </button> 
                                                 <button @click="openModal(item)" type="button">
@@ -79,7 +79,7 @@ const createSurvey = () =>{
                                         </div>
                                     </div>
                                 </div>
-                                <ConfirmationModal :show="showConfirmDeleteSurveyModal" @close="closeModal">
+                                <ConfirmationModal :show="showConfirmDeleteQuestionModal" @close="closeModal">
                                     <template #title>
                                         <h2 class="text-lg font-semibold text-slate-800">Supprimer ce sondage ?</h2>
                                     </template>
@@ -88,12 +88,12 @@ const createSurvey = () =>{
                                     </template>
                                     <template #footer>
                                         <div class="mt-6 flex space-x-4">
-                                            <DangerButton @click="deleteSurvey(CurrentElement.id)">Supprimer</DangerButton>
+                                            <DangerButton @click="deleteQuestion(CurrentElement.id)">Supprimer</DangerButton>
                                             <SecondaryButton @click="closeModal">Annuler</SecondaryButton>
                                         </div>
                                     </template>
                                 </ConfirmationModal>
-                                <Pagination :meta="surveys.meta"/>
+                                <Pagination :meta="questions.meta"/>
                             </div>
                         </div>
                     </section>

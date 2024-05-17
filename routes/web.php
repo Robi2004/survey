@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SurveyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -29,5 +30,16 @@ Route::middleware([
     Route::post('/surveys/{id}', [SurveyController::class, 'update'])->name('surveys.update');
     Route::post('/surveys', [SurveyController::class, 'store'])->name('surveys.store');
     
-    Route::delete('/surveys/{id}', [SurveyController::class, 'destroy'])->name('surveys.delete');
+    Route::delete('/surveys/{id}', [SurveyController::class, 'destroy'])->name('surveys.destroy');
+
+    Route::get('/questions', [QuestionController::class, 'index'])->name('questions.index');
+    Route::get('/questions/create', [QuestionController::class, 'create'])->name('questions.create');
+    Route::get('/questions/{id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
+
+    Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
+
+    Route::post('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
+    Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
+    
+    Route::delete('/questions/{id}', [QuestionController::class, 'destroy'])->name('questions.destroy');
 });

@@ -12,6 +12,6 @@ class Question extends Model
     protected $fillable = [
         'type',
         'content',
-        'id_survey'
+        'id_survey',
     ];
 }

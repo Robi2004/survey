@@ -49,7 +49,12 @@ const logout = () => {
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('surveys.index')" :active="route().current('surveys.index')">
-                                    Dashboard
+                                    Sondage
+                                </NavLink>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('questions.index')" :active="route().current('questions.index')">
+                                    Questions
                                 </NavLink>
                             </div>
                         </div>
