@@ -45,7 +45,7 @@ class SurveyController extends Controller
             'title' => $request->title,
             'image' => $path ?? null,
             'id_user' => Auth::id(),
-        ]);
+        ]);/*
         for($i=1; $i < count($request->contentQuestion);$i++) {
             $question = Question::create([
                 'content' => $request->contentQuestion[$i],
@@ -59,7 +59,7 @@ class SurveyController extends Controller
                     'id_question' => $question->id,
                 ]);
             }
-        }
+        }*/
         return redirect('/surveys/'.$survey->id);   
     }
 
