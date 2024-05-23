@@ -49,7 +49,7 @@ const createSurvey = () =>{
     <AppLayout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
+                Gestion des sondages
             </h2>
         </template>
         <div class="py-12">

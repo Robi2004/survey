@@ -13,6 +13,7 @@ import { router } from '@inertiajs/vue3';
 
 defineProps({
     questions: Object,
+    id_survey: Object,
 });
 
 const showConfirmDeleteQuestionModal = ref(false)
@@ -32,16 +33,16 @@ const deleteQuestion = (id) =>{
     closeModal();
 };
 
-const showQuestion = (id) =>{
-    router.get('/questions/'+id,);
+const showSurvey = (id) =>{
+    router.get('/surveys/'+id,);
 };
 
 const editQuestion = (id) =>{
     router.get('/questions/'+id+'/edit',);
 };
 
-const createQuestion = () =>{
-    router.get('/questions/create',);
+const createQuestion = (id) =>{
+    router.get('/questions/create/'+id,);
 };
 </script>
 
@@ -49,7 +50,7 @@ const createQuestion = () =>{
     <AppLayout title="QuestionDashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
+                Gestion des questions
             </h2>
         </template>
         <div class="py-12">
@@ -57,8 +58,13 @@ const createQuestion = () =>{
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
                     <section class="text-gray-600 body-font">
                         <div class="container px-5 py-24 mx-auto">
-                            <div class="mx-44 mb-8 ">
-                                <PrimaryButton @click="createQuestion">Créer une Question</PrimaryButton>
+                            <div class="flex">
+                                <div class="ml-44 mb-8 ">
+                                    <PrimaryButton @click="createQuestion(id_survey)">Créer une Question</PrimaryButton>
+                                </div>
+                                <div class="ml-12 mb-8 ">
+                                    <PrimaryButton @click="showSurvey(id_survey)">Voir le sondage</PrimaryButton>
+                                </div>
                             </div>
                             <div v-if="questions.data.length">
                                 <div class="flex flex-col-reverse -m-4">
@@ -66,9 +72,6 @@ const createQuestion = () =>{
                                         <div class="mh-25 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                             <div class="p-6 flex">
                                                 <p class="font-extrabold flex-auto md:w-1/3" :href="'/questions/'+item.id">{{ item.content }}</p>
-                                                <button @click="showQuestion(item.id)" type="button">
-                                                    <Show></Show>
-                                                </button> 
                                                 <button @click="editQuestion(item.id)" class="mx-2" type="button">
                                                     <Edit></Edit>
                                                 </button> 

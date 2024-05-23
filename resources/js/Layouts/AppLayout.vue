@@ -44,18 +44,23 @@ const logout = () => {
                                 <Link :href="route('surveys.index')">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
+                                <Link :href="route('surveys.index')">
+                                    <p class="pl-2 font-bold">Sondix</p>
+                                </Link>
                             </div>
-
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('surveys.index')" :active="route().current('surveys.index')">
-                                    Sondage
-                                </NavLink>
-                            </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('questions.index')" :active="route().current('questions.index')">
-                                    Questions
-                                </NavLink>
+                        </div>
+                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+                                <!-- Navigation Links -->
+                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink :href="route('surveys.index')">
+                                        Accueil
+                                    </NavLink>
+                                </div>
+                                <!-- Navigation Links -->
+                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink :href="route('surveys.index')" :active="route().current('surveys.index')">
+                                        Sondage
+                                    </NavLink>
                             </div>
                         </div>
 

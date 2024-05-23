@@ -45,21 +45,7 @@ class SurveyController extends Controller
             'title' => $request->title,
             'image' => $path ?? null,
             'id_user' => Auth::id(),
-        ]);/*
-        for($i=1; $i < count($request->contentQuestion);$i++) {
-            $question = Question::create([
-                'content' => $request->contentQuestion[$i],
-                'type' => $request->type[$i],
-                'id_survey' => $survey->id,
-            ]);
-            if(isset($request->contentAnswer[0][$i]))
-            for($x=1;$x < count($request->contentAnswer[0][$i]);$x++){
-                $answers = Answer::create([
-                    'content' => $request->contentAnswer[0][$i][$x],
-                    'id_question' => $question->id,
-                ]);
-            }
-        }*/
+        ]);
         return redirect('/surveys/'.$survey->id);   
     }
 
@@ -102,59 +88,9 @@ class SurveyController extends Controller
                 Storage::disk('public')->delete($survey->image);
             $survey->image = $path;
         }
+
         $survey->update();
-        $questions = Question::where('id_survey',$id)->get();
-        foreach($questions as $question){
-            $exist = false;
-            for($i = 1; $i < count($request->question['id']); $i++){
-                if($request->question['id'][$i] == $question->id){
-                    $exist = true;
-                    $question->content = $request->question['content'][$i];
-                    $question->type = $request->question['type'][$i];
-                    $question->update();
-                    if($question->type != "Text"){
-                        $answers = Answer::where('id_question',$question->id);
-                        if(isset($answers)){
-                            foreach($answers as $answer){
-                                $existAnswer = false;
-                                if(isset($request->answers[0][$i][0]['id'])){
-                                    for($x=1;$x < count($request->answers[0][$i][0]['id']);$x++){
-                                        if($request->answers[0][$i][0]['id'][$x]==$answer->id){
-                                            $existAnswer = true;
-                                            $answer->content = $request->answers[0][$i][0]['content'][$x];
-                                            $answer->update();
-                                        }
-                                    }
-                                }
-                                if(!$existAnswer){
-                                    $answer->delete();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if(!$exist){
-                $question->delete();
-            }
-        }
-        if(count($request->question['id']) != count($request->question['content'])){
-            for($i = count($request->question['id']); $i < count($request->question['content']) ;$i++){
-                $question = Question::create([
-                    'content' => $request->question['content'][$i], 
-                    'type' => $request->question['type'][$i],
-                    'id_survey' => $survey->id,
-                ]);
-                if(isset($request->answers[0][$i][0]['content'])){
-                    for($x=1;$x < count($request->answers[0][$i][0]['content']);$x++){
-                        Answer::create([
-                            'content' => $request->answers[0][$i][0]['content'][$x],
-                            'id_question' => $question->id,
-                        ]);
-                    }
-                }
-            }
-        }
+
         return redirect('/surveys/'.$survey->id);   
     }
 

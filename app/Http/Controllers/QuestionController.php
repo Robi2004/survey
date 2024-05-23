@@ -19,19 +19,18 @@ class QuestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        $questions = QuestionResource::collection(Question::paginate(12)); // Paginate après avoir récupéré tous les articles
-        return Inertia::render('Question/QuestionDashboard', ['questions' => $questions]);
+        $questions = QuestionResource::collection(Question::where('id_survey',$id)->paginate(12)); // Paginate après avoir récupéré tous les articles
+        return Inertia::render('Question/QuestionDashboard', ['questions' => $questions, 'id_survey'=>$id]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($id)
     {
-        $surveys = Survey::all();
-        return Inertia::render('Question/CreateQuestion', ['surveys' => $surveys]);
+        return Inertia::render('Question/CreateQuestion', ['id_survey'=>$id]);
     }
 
     /**
@@ -44,7 +43,6 @@ class QuestionController extends Controller
             'type' => $request->type,
             'id_survey' => $request->id_survey,
         ]));
-
         if($request->type != "Text"){
             foreach($request->answers as $answer){
                 if($answer != null){
@@ -55,7 +53,7 @@ class QuestionController extends Controller
             }
         }
 
-        return redirect('/questions/'.$question->id);     
+        return redirect('/questions/'.$request->id_survey);     
     }
 
     /**
@@ -92,9 +90,22 @@ class QuestionController extends Controller
     {
         $question = Question::where('id',$id)->get();
         if($question[0]->type != "Text"){
-            $answers = Answer::where('id_question',$question[0]->id);
-            if(isset($answers)){
-                foreach($answers as $answer){
+            if(isset($request->oldAnswers)){
+                foreach($request->oldAnswers as $oldAnswer){
+                    $answer = Answer::where('id',$oldAnswer['id']);
+                    for($x =1; $x<count($request->answers['id']);$x++){
+                        if($answer->id == $request->answers['id'][$x]){
+                            if($request->answers['content'][$x] != null){
+                                $answer->content = $request->answers['content'][$x];
+                                $request->answers['content'][$x] = null;
+                                $answer->update();
+                            }
+                        }
+                    }
+
+
+
+
                     $existAnswer = false;
                     if(isset($request->answers['id'])){
                         for($x=1;$x < count($request->answers['id']);$x++){
@@ -115,7 +126,7 @@ class QuestionController extends Controller
         $question->type = $request->type;
         $question->content = $request->content;
         $question->update();
-        return redirect('/questions/'.$id);
+        return redirect('/questions/'.$question->id_survey);
         
     }
 
