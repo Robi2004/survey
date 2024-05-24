@@ -13,6 +13,7 @@ use App\Models\Answer;
 use App\Models\Survey;
 use Inertia\Inertia;
 use App\Models\UserAnswer;
+use Psy\Readline\Hoa\ConsoleInput;
 
 class QuestionController extends Controller
 {
@@ -88,45 +89,42 @@ class QuestionController extends Controller
      */
     public function update(UpdateQuestionRequest $request, $id)
     {
-        $question = Question::where('id',$id)->get();
+        $allAnswers = $request->answers;
+        $question = Question::find($id)->get();
+        $question[0]->type = $request->type;
+        $question[0]->content = $request->content;
         if($question[0]->type != "Text"){
             if(isset($request->oldAnswers)){
                 foreach($request->oldAnswers as $oldAnswer){
-                    $answer = Answer::where('id',$oldAnswer['id']);
-                    for($x =1; $x<count($request->answers['id']);$x++){
-                        if($answer->id == $request->answers['id'][$x]){
-                            if($request->answers['content'][$x] != null){
-                                $answer->content = $request->answers['content'][$x];
-                                $request->answers['content'][$x] = null;
-                                $answer->update();
-                            }
-                        }
-                    }
-
-
-
-
+                    $answer = Answer::where('id',$oldAnswer['id'])->get();
                     $existAnswer = false;
-                    if(isset($request->answers['id'])){
-                        for($x=1;$x < count($request->answers['id']);$x++){
-                            if($request->answers['id'][$x]==$answer->id){
+                    for($x =1; $x<count($request->answers['id']);$x++){
+                        if($answer[0]->id == $request->answers['id'][$x]){
+                            if($request->answers['content'][$x] != null){
+                                $answer[0]->content = $request->answers['content'][$x];
+                                $allAnswers['content'][$x] = null;
+                                $answer[0]->update();
                                 $existAnswer = true;
-                                $answer->content = $request->answers['content'][$x];
-                                $answer->update();
                             }
                         }
                     }
                     if(!$existAnswer){
-                        $answer->delete();
+                        $answer[0]->delete();
                     }
                 }
             }
+            if(count($allAnswers['content']) != 0){
+                foreach($allAnswers['content'] as $answer){
+                    if($answer != null){
+                    Answer::create([
+                        'content' => $answer,
+                        'id_question' => $id,
+                    ]);}
+                }
+            }
         }
-        $question = Question::find($id);
-        $question->type = $request->type;
-        $question->content = $request->content;
-        $question->update();
-        return redirect('/questions/'.$question->id_survey);
+        $question[0]->update();
+        return redirect('/questions/'.$question[0]->id_survey);
         
     }
 
