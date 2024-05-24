@@ -10,7 +10,13 @@ class Answer extends Model
     use HasFactory;
     protected $table = "answers";
     protected $fillable = [
-        'answer',
+        'id',
+        'content',
         'id_question'
     ];
+
+    public function Question()
+    {
+        return $this->belongsTo('App\Models\Question');
+    }
 }
