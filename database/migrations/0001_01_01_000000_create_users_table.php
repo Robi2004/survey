@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('firstName');
             $table->string('lastName');
             $table->string('city')->nullable();
+            $table->string('id_survey')->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();

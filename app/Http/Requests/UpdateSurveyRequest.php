@@ -22,7 +22,8 @@ class UpdateSurveyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['required', 'min:5', 'max:100'],
+            'image' => ['required'],
         ];
     }
 }

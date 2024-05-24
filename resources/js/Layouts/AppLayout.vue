@@ -41,10 +41,10 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('surveys.index')">
+                                <Link :href="route('homepage')">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
-                                <Link :href="route('surveys.index')">
+                                <Link :href="route('homepage')">
                                     <p class="pl-2 font-bold">Sondix</p>
                                 </Link>
                             </div>
@@ -52,7 +52,7 @@ const logout = () => {
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                                 <!-- Navigation Links -->
                                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                    <NavLink :href="route('surveys.index')">
+                                    <NavLink :href="route('homepage')" :active="route().current('homepage')">
                                         Accueil
                                     </NavLink>
                                 </div>

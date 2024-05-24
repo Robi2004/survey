@@ -8,25 +8,9 @@ defineProps({
     errors: Object,
 });
 
-const numbers = ([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]);
-
-const typeOfQuestion = reactive([]);
-
-const contentAnswer = reactive({
-    1:[], 2:[], 3:[], 4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[],14:[],15:[],16:[],17:[],18:[],19:[],20:[],});
-
-const numberQuestion = ref();
-
-const numberAnswer = reactive([]);
-
-const contentQuestion = reactive([]);
-
 const form = reactive({
     title: null,
     image: null,
-    contentQuestion : contentQuestion,
-    contentAnswer : [contentAnswer],
-    type : typeOfQuestion,
 });
 
 function submit (){
@@ -61,10 +45,11 @@ function submit (){
                                             <div v-if="errors.title" class="text-red-600">{{ errors.title }}</div>
                                         </div>
                                         </div>
-                                        <div class="p-2 w-1/2">
+                                        <div class="p-2 w-full">
                                         <div class="relative">
                                             <label for="image" class="leading-7 text-sm text-gray-600">Image</label>
                                             <input type="file" accept="image/png, image/gif, image/jpeg" @input="form.image = $event.target.files[0]" id="image" name="image" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                            <div v-if="errors.image" class="text-red-600">{{ errors.image }}</div>
                                         </div>
                                     </div>
                                     <div class="p-2 w-full mt-4 ">

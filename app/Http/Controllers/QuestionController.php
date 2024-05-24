@@ -58,21 +58,6 @@ class QuestionController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $answers = [];
-        $question = Question::where('id',$id)->get();
-        $survey = SurveyResource::collection(Survey::where('id',$question[0]->id_survey)->get());
-        if($question[0]->type != "Text"){
-            $answers = AnswerResource::collection(Answer::where('id_question',$id)->get());
-        }
-        $question = QuestionResource::collection($question);
-        return Inertia::render('Question/Question', ['question' => $question, 'survey' => $survey, 'answers' => $answers]);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
@@ -90,6 +75,7 @@ class QuestionController extends Controller
     public function update(UpdateQuestionRequest $request, $id)
     {
         $allAnswers = $request->answers;
+        $request->validated();
         $question = Question::find($id)->get();
         $question[0]->type = $request->type;
         $question[0]->content = $request->content;
