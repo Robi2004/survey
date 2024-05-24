@@ -89,7 +89,6 @@ class SurveyController extends Controller
                 Storage::disk('public')->delete($survey->image);
             $survey->image = $path;
         }
-
         $survey->update();
 
         return redirect('/surveys/'.$survey->id);   

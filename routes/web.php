@@ -22,7 +22,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/homepage', [ChartController::class, 'index'])->name('homepage');
+    Route::get('/homepage', [ChartController::class, 'homepage'])->name('homepage');
 
     Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys.index');
     Route::get('/surveys/create', [SurveyController::class, 'create'])->name('surveys.create');
@@ -39,7 +39,7 @@ Route::middleware([
     Route::get('/questions/create/{id}', [QuestionController::class, 'create'])->name('questions.create');
     Route::get('/questions/{id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
 
-    Route::post('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
+    Route::patch('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
     Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
     
     Route::delete('/questions/{id}', [QuestionController::class, 'destroy'])->name('questions.destroy');

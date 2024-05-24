@@ -13,7 +13,7 @@ class ChartController extends Controller
     /**
      * Show the chart of all survey created by this user.
      */
-    public function index()
+    public function homepage()
     {
         $surveys = Survey::where('id_user',Auth::id())->get();
         for($x = 0; $x < count($surveys);$x++){

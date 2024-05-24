@@ -1,8 +1,8 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { onBeforeMount, onMounted, reactive, ref } from 'vue';
-import Chart from 'chart.js/auto';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Chart from 'chart.js/auto';
+import { onBeforeMount, onMounted} from 'vue';
 import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
