@@ -76,36 +76,38 @@ class QuestionController extends Controller
     {
         $allAnswers = $request->answers;
         $request->validated();
-        $question = Question::find($id)->get();
-        $question[0]->type = $request->type;
-        $question[0]->content = $request->content;
-        if($question[0]->type != "Text"){
-            if(isset($request->oldAnswers)){
-                foreach($request->oldAnswers as $oldAnswer){
-                    $answer = Answer::where('id',$oldAnswer['id'])->get();
-                    $existAnswer = false;
-                    for($x =1; $x<count($request->answers['id']);$x++){
-                        if($answer[0]->id == $request->answers['id'][$x]){
-                            if($request->answers['content'][$x] != null){
-                                $answer[0]->content = $request->answers['content'][$x];
-                                $allAnswers['content'][$x] = null;
-                                $answer[0]->update();
-                                $existAnswer = true;
+        if(Question::where('id',$id)->exists()){
+            $question = Question::find($id)->get();
+            $question[0]->type = $request->type;
+            $question[0]->content = $request->content;
+            if($question[0]->type != "Text"){
+                if(isset($request->oldAnswers)){
+                    foreach($request->oldAnswers as $oldAnswer){
+                        $answer = Answer::where('id',$oldAnswer['id'])->get();
+                        $existAnswer = false;
+                        for($x =1; $x < count($request->answers['id']);$x++){
+                            if($answer[0]->id == $request->answers['id'][$x]){
+                                if($request->answers['content'][$x] != null){
+                                    $answer[0]->content = $request->answers['content'][$x];
+                                    $allAnswers['content'][$x] = null;
+                                    $answer[0]->update();
+                                    $existAnswer = true;
+                                }
                             }
                         }
-                    }
-                    if(!$existAnswer){
-                        $answer[0]->delete();
+                        if(!$existAnswer){
+                            $answer[0]->delete();
+                        }
                     }
                 }
-            }
-            if(count($allAnswers['content']) != 0){
-                foreach($allAnswers['content'] as $answer){
-                    if($answer != null){
-                    Answer::create([
-                        'content' => $answer,
-                        'id_question' => $id,
-                    ]);}
+                if(count($allAnswers['content']) != 0){
+                    foreach($allAnswers['content'] as $answer){
+                        if($answer != null){
+                        Answer::create([
+                            'content' => $answer,
+                            'id_question' => $id,
+                        ]);}
+                    }
                 }
             }
         }
