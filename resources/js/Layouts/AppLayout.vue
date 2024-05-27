@@ -50,17 +50,23 @@ const logout = () => {
                             </div>
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
-                                <!-- Navigation Links -->
-                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                    <NavLink :href="route('homepage')" :active="route().current('homepage')">
-                                        Accueil
-                                    </NavLink>
-                                </div>
-                                <!-- Navigation Links -->
-                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                    <NavLink :href="route('surveys.index')" :active="route().current('surveys.index')">
-                                        Sondage
-                                    </NavLink>
+                            <!-- Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('homepage')" :active="route().current('homepage')">
+                                    Accueil
+                                </NavLink>
+                            </div>
+                            <!-- Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('surveys.index')" :active="route().current('surveys.index')">
+                                    Sondage
+                                </NavLink>
+                            </div>
+                            <!-- Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('users.index')" :active="route().current('users.index')">
+                                    Utilisateur
+                                </NavLink>
                             </div>
                         </div>
 
@@ -201,8 +207,8 @@ const logout = () => {
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('surveys.index')" :active="route().current('surveys.index')">
-                            Dashboard
+                        <ResponsiveNavLink :href="route('homepage')" :active="route().current('homepage')">
+                            Accueil
                         </ResponsiveNavLink>
                     </div>
 

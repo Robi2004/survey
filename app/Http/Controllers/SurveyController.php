@@ -21,16 +21,24 @@ class SurveyController extends Controller
      */
     public function index()
     {
-        $surveys = SurveyResource::collection(Survey::where('id_user',Auth::id())->paginate(12));
-        return Inertia::render('Survey/SurveyDashboard', ['surveys' => $surveys]);
+        if(Auth::user()->can('admin'))
+        {
+            $surveys = SurveyResource::collection(Survey::paginate(12));
+            return Inertia::render('Admin/SurveyDashboard', ['surveys' => $surveys]);
+        }else{
+            $surveys = SurveyResource::collection(Survey::where('id_user',Auth::id())->paginate(12));
+            return Inertia::render('Survey/SurveyDashboard', ['surveys' => $surveys]);
+        }
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-    {
+{       if(Auth::user()->can('user'))
+        {
         return Inertia::render('Survey/CreateSurvey');
+        }
     }
 
     /**
@@ -38,15 +46,18 @@ class SurveyController extends Controller
      */
     public function store(StoreSurveyRequest $request)
     {
-        if($request->hasFile('image')){
-            $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
+        if(Auth::user()->can('user'))
+        {
+            if($request->hasFile('image')){
+                $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
+            }
+            $survey = Survey::create(array_merge($request->validated(),[
+                'title' => $request->title,
+                'image' => $path ?? null,
+                'id_user' => Auth::id(),
+            ]));
+            return redirect('/surveys/'.$survey->id);   
         }
-        $survey = Survey::create(array_merge($request->validated(),[
-            'title' => $request->title,
-            'image' => $path ?? null,
-            'id_user' => Auth::id(),
-        ]));
-        return redirect('/surveys/'.$survey->id);   
     }
 
     /**
@@ -56,10 +67,13 @@ class SurveyController extends Controller
     {
         $survey = Survey::where('id', $id)->get();
         $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        $survey['questions'] = Question::where('id_survey',$id)->get();
-        foreach($survey['questions'] as $question){
+        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        {
+            $survey['questions'] = Question::where('id_survey',$id)->get();
+            foreach($survey['questions'] as $question){
             $question['answer'] = Answer::where('id_question', $question->id)->get();}
-        return Inertia::render('Survey/Survey', ['survey' => $survey]);
+            return Inertia::render('Survey/Survey', ['survey' => $survey]);
+        }
     }
 
     /**
@@ -69,10 +83,10 @@ class SurveyController extends Controller
     {
         $survey = Survey::where('id', $id)->get();
         $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        $survey['questions'] = Question::where('id_survey',$id)->get();
-        foreach($survey['questions'] as $question){
-            $question['answer'] = Answer::where('id_question', $question->id)->get();}
-        return Inertia::render('Survey/EditSurvey', ['survey' => $survey]);
+        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        {
+            return Inertia::render('Survey/EditSurvey', ['survey' => $survey]);
+        }
     }
 
     /**
@@ -81,6 +95,8 @@ class SurveyController extends Controller
     public function update(UpdateSurveyRequest $request, $id)
     {
         $survey = Survey::find($id);
+        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        {
         $request->validated();
         $survey->title = $request->title;
         if($request->hasFile('image')){
@@ -92,6 +108,7 @@ class SurveyController extends Controller
         $survey->update();
 
         return redirect('/surveys/'.$survey->id);   
+        }
     }
 
     /**
@@ -100,18 +117,13 @@ class SurveyController extends Controller
     public function destroy($id)
     {
         $survey = Survey::find($id);
-        if($survey->image != null){
-            Storage::disk('public')->delete($survey->image);
+        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        {
+            if($survey->image != null){
+                Storage::disk('public')->delete($survey->image);
+            }
+            $survey->delete();
         }
-        $survey->delete();
     }
 
-    /**
-     * Show the chart of all survey created by this user.
-     */
-    public function chart()
-    {
-        $surveys = Survey::where('id_user',Auth::id());
-        return Inertia::render('HomePage', ['surveys' => $surveys]);
-    }
 }
