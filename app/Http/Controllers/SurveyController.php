@@ -21,8 +21,8 @@ class SurveyController extends Controller
      */
     public function index()
     {
-        $surveys = SurveyResource::collection(Survey::paginate(12)); // Paginate après avoir récupéré tous les articles
-        return Inertia::render('Dashboard', ['surveys' => $surveys]);
+        $surveys = SurveyResource::collection(Survey::where('id_user',Auth::id())->paginate(12));
+        return Inertia::render('Survey/SurveyDashboard', ['surveys' => $surveys]);
     }
 
     /**
@@ -41,11 +41,11 @@ class SurveyController extends Controller
         if($request->hasFile('image')){
             $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
         }
-        $survey = Survey::create([
+        $survey = Survey::create(array_merge($request->validated(),[
             'title' => $request->title,
             'image' => $path ?? null,
             'id_user' => Auth::id(),
-        ]);
+        ]));
         return redirect('/surveys/'.$survey->id);   
     }
 
@@ -81,6 +81,7 @@ class SurveyController extends Controller
     public function update(UpdateSurveyRequest $request, $id)
     {
         $survey = Survey::find($id);
+        $request->validated();
         $survey->title = $request->title;
         if($request->hasFile('image')){
             $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
@@ -88,7 +89,6 @@ class SurveyController extends Controller
                 Storage::disk('public')->delete($survey->image);
             $survey->image = $path;
         }
-
         $survey->update();
 
         return redirect('/surveys/'.$survey->id);   
@@ -104,5 +104,14 @@ class SurveyController extends Controller
             Storage::disk('public')->delete($survey->image);
         }
         $survey->delete();
+    }
+
+    /**
+     * Show the chart of all survey created by this user.
+     */
+    public function chart()
+    {
+        $surveys = Survey::where('id_user',Auth::id());
+        return Inertia::render('HomePage', ['surveys' => $surveys]);
     }
 }

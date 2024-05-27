@@ -50,7 +50,7 @@ function submit (){
             }
         }
     }
-    router.post('/questions/'+props.question[0].id, form);
+    router.patch('/questions/'+props.question[0].id, form);
 };
 
 </script>
@@ -68,7 +68,6 @@ function submit (){
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
                         <div class="container px-5 py-24 mx-auto">
                             <div class="flex flex-wrap -m-4">
-                                {{ form }}
                                 <form @submit.prevent="submit" class="container px-5 py-24 mx-auto">
                                     <div class="flex flex-col text-center w-full mb-12">
                                     <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Modifier une question</h1>
@@ -78,7 +77,7 @@ function submit (){
                                             <div class="p-2 w-full">
                                                 <label for="title" class="leading-7 text-sm text-gray-600">Titre de la Question</label>
                                                 <input type="text" id="title" name="title" v-model="form.content" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                <div v-if="errors.title" class="text-red-600">{{ errors.content }}</div>
+                                                <div v-if="errors.content" class="text-red-600">{{ errors.content }}</div>
                                             <label for="TypeQuestion" class="leading-7 text-sm text-gray-600">De quel type est votre question ?</label>
                                                 <div class="flex flex-wrap">
                                                 <div class="p-2 w-1/3">
@@ -93,6 +92,7 @@ function submit (){
                                                     <input v-model="form.type" type="radio" inputId="CheckBox" :name="'TypeQuestion' + number" value="CheckBox" />
                                                     <label for="CheckBox" class="ml-2">Check box</label>
                                                 </div>
+                                                <div v-if="errors.type" class="text-red-600">{{ errors.type }}</div>
                                                 <div class="p-2 w-full" v-if="form.type == 'Select' || form.type == 'CheckBox'">
                                                     <div class="p-2 w-1/6" >
                                                         <select v-model="numberAnswer.number" type="select" id="numberAnswer" name="numberAnswer" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">

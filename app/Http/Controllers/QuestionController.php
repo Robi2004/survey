@@ -58,21 +58,6 @@ class QuestionController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $answers = [];
-        $question = Question::where('id',$id)->get();
-        $survey = SurveyResource::collection(Survey::where('id',$question[0]->id_survey)->get());
-        if($question[0]->type != "Text"){
-            $answers = AnswerResource::collection(Answer::where('id_question',$id)->get());
-        }
-        $question = QuestionResource::collection($question);
-        return Inertia::render('Question/Question', ['question' => $question, 'survey' => $survey, 'answers' => $answers]);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
@@ -90,36 +75,39 @@ class QuestionController extends Controller
     public function update(UpdateQuestionRequest $request, $id)
     {
         $allAnswers = $request->answers;
-        $question = Question::find($id)->get();
-        $question[0]->type = $request->type;
-        $question[0]->content = $request->content;
-        if($question[0]->type != "Text"){
-            if(isset($request->oldAnswers)){
-                foreach($request->oldAnswers as $oldAnswer){
-                    $answer = Answer::where('id',$oldAnswer['id'])->get();
-                    $existAnswer = false;
-                    for($x =1; $x<count($request->answers['id']);$x++){
-                        if($answer[0]->id == $request->answers['id'][$x]){
-                            if($request->answers['content'][$x] != null){
-                                $answer[0]->content = $request->answers['content'][$x];
-                                $allAnswers['content'][$x] = null;
-                                $answer[0]->update();
-                                $existAnswer = true;
+        $request->validated();
+        if(Question::where('id',$id)->exists()){
+            $question = Question::find($id)->get();
+            $question[0]->type = $request->type;
+            $question[0]->content = $request->content;
+            if($question[0]->type != "Text"){
+                if(isset($request->oldAnswers)){
+                    foreach($request->oldAnswers as $oldAnswer){
+                        $answer = Answer::where('id',$oldAnswer['id'])->get();
+                        $existAnswer = false;
+                        for($x =1; $x < count($request->answers['id']);$x++){
+                            if($answer[0]->id == $request->answers['id'][$x]){
+                                if($request->answers['content'][$x] != null){
+                                    $answer[0]->content = $request->answers['content'][$x];
+                                    $allAnswers['content'][$x] = null;
+                                    $answer[0]->update();
+                                    $existAnswer = true;
+                                }
                             }
                         }
-                    }
-                    if(!$existAnswer){
-                        $answer[0]->delete();
+                        if(!$existAnswer){
+                            $answer[0]->delete();
+                        }
                     }
                 }
-            }
-            if(count($allAnswers['content']) != 0){
-                foreach($allAnswers['content'] as $answer){
-                    if($answer != null){
-                    Answer::create([
-                        'content' => $answer,
-                        'id_question' => $id,
-                    ]);}
+                if(count($allAnswers['content']) != 0){
+                    foreach($allAnswers['content'] as $answer){
+                        if($answer != null){
+                        Answer::create([
+                            'content' => $answer,
+                            'id_question' => $id,
+                        ]);}
+                    }
                 }
             }
         }
