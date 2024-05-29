@@ -2,7 +2,6 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { ref } from 'vue';
 
 defineProps({
     errors: Object,
