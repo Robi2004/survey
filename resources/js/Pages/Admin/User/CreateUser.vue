@@ -11,7 +11,6 @@ const form = useForm({
     lastName: '',
     email: '',
     password: '',
-    password_confirmation: '',
     terms: false,
 });
 

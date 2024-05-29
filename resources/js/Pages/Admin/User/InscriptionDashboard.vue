@@ -4,44 +4,56 @@ import Pagination from '@/Components/Paginations.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ConfirmationModal from '@/Components/ConfirmationModal.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import Trash from '@/Components/TrashIcon.vue';
-import Edit from '@/Components/EditIcon.vue';
 import Show from '@/Components/ShowIcon.vue';
-import { ref } from 'vue';
+import Reject from '@/Components/RejectIcon.vue';
+import Validate from '@/Components/ValidateIcon.vue';
+import { reactive, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
 defineProps({
     users: Object,
 });
 
-const showConfirmDeleteUserModal = ref(false)
+const showConfirmValidationUserModal = ref(false)
 const CurrentElement = ref()
 
-const openModal = (item) => {
+const Modal = reactive({
+    title :"",
+    button :"",
+    validate: false
+})
+
+const openModalValidate = (item) => {
     CurrentElement.value = item;
-    showConfirmDeleteUserModal.value = true;
+    showConfirmValidationUserModal.value = true;
+    Modal.title = "Voulez-vous valider l\'inscription ?";
+    Modal.button = "Valider";
+    Modal.validate = true;
+}
+
+const openModalReject = (item) => {
+    CurrentElement.value = item;
+    showConfirmValidationUserModal.value = true;
+    Modal.title = "Voulez-vous supprimer l\'inscription ?";
+    Modal.button = "Supprimer";
+    Modal.validate = false;
 }
 
 const closeModal = () => {
-    showConfirmDeleteUserModal.value = false;
+    showConfirmValidationUserModal.value = false;
 }
 
-const deleteUser = (id) =>{
-    router.delete('/users/'+id,{preserveScroll: true});
+const ValidationUser = (id) =>{
+    if(Modal.validate){
+        router.put('/users/inscription/'+id,{preserveScroll: true});
+    }else{
+        router.delete('/users/'+id,{preserveScroll: true});
+    }
     closeModal();
 };
 
 const showUser = (id) =>{
     router.get('/users/'+id,);
-};
-
-const editUser = (id) =>{
-    router.get('/users/'+id+'/edit',);
-};
-
-const createUser = () =>{
-    router.get('/users/create',);
 };
 </script>
 
@@ -49,7 +61,7 @@ const createUser = () =>{
     <AppLayout title="UserDashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Gestion des utilisateurs
+                Gestion des inscriptions
             </h2>
         </template>
         <div class="py-12">
@@ -57,49 +69,42 @@ const createUser = () =>{
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
                     <section class="text-gray-600 body-font">
                         <div class="container px-5 py-24 mx-auto">
-                            <div class="flex mx-44">
-                                <div class="mr-10 mb-8">
-                                    <PrimaryButton @click="createUser">Créer un utilisateur</PrimaryButton>
-                                </div>
-                                <div class="mb-8 ">
-                                    <PrimaryButton @click="createUser">Exporter les utilisateurs</PrimaryButton>
-                                </div>
-                            </div>
                             <div v-if="users.data.length">
                                 <div class="flex flex-col-reverse -m-4">
                                     <div class="p-4 mx-44" :item v-for="item in users.data">
                                         <div class="mh-25 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                             <div class="p-6 flex">
-                                                <p class="font-extrabold flex-auto md:w-1/3" :href="'/surveys/'+item.id">{{ item.firstName}} {{  item.lastName }}</p>
+                                                <p class="font-extrabold flex-auto md:w-1/3" :href="'/surveys/'+item.id">{{ item.firstName}} {{ item.lastName }}</p>
                                                 <button @click="showUser(item.id)" type="button">
                                                     <Show></Show>
-                                                </button> 
-                                                <button @click="editUser(item.id)" class="mx-2" type="button">
-                                                    <Edit></Edit>
-                                                </button> 
-                                                <button @click="openModal(item)" type="button">
-                                                    <Trash></Trash>
+                                                </button>
+                                                <button @click="openModalValidate(item)" type="button" class="ml-2">
+                                                    <Validate></Validate>
+                                                </button>
+                                                <button @click="openModalReject(item)" type="button" class="ml-2">
+                                                    <Reject></Reject>
                                                 </button> 
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <ConfirmationModal :show="showConfirmDeleteUserModal" @close="closeModal">
+                                <ConfirmationModal :show="showConfirmValidationUserModal" @close="closeModal">
                                     <template #title>
-                                        <h2 class="text-lg font-semibold text-slate-800">Supprimer ce sondage ?</h2>
+                                        <h2 class="text-lg font-semibold text-slate-800">{{ Modal.title }}</h2>
                                     </template>
                                     <template #content>
                                         <p class="text-lg font-semibold text-slate-600">{{ CurrentElement.title }}</p>
                                     </template>
                                     <template #footer>
                                         <div class="mt-6 flex space-x-4">
-                                            <DangerButton @click="deleteUser(CurrentElement.id)">Supprimer</DangerButton>
+                                            <DangerButton @click="ValidationUser(CurrentElement.id)">{{ Modal.button }}</DangerButton>
                                             <SecondaryButton @click="closeModal">Annuler</SecondaryButton>
                                         </div>
                                     </template>
                                 </ConfirmationModal>
                                 <Pagination :meta="users.meta"/>
                             </div>
+                            <div v-else><h1 class="sm:text-3xl text-2xl text-center font-medium title-font text-gray-900">Aucune inscriptions</h1></div>
                         </div>
                     </section>
                 </div>

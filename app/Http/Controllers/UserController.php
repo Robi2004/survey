@@ -14,6 +14,7 @@ use Illuminate\Http\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Jetstream\Jetstream;
+use Spatie\Permission\Models\Role;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -23,8 +24,27 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = UserResource::collection(User::paginate(12));
+        $users = UserResource::collection(User::role('user')->paginate(12));
         return Inertia::render('Admin/User/UserDashboard', ['users' => $users]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function inscription()
+    {
+        $users = UserResource::collection(User::doesntHave('roles')->paginate(12));
+        return Inertia::render('Admin/User/InscriptionDashboard', ['users' => $users]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function validate($id)
+    {
+        $user = User::where('id', $id)->get();
+        $user[0]->assignRole('user');
+        return redirect('/users/inscription');
     }
 
     /**
@@ -65,34 +85,23 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $survey = Survey::where('id', $id)->get();
-        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
-        {
-            return Inertia::render('Survey/EditSurvey', ['survey' => $survey]);
-        }
+        $user = User::where('id', $id)->get();
+        return Inertia::render('Admin/User/EditUser', ['user' => $user]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSurveyRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $survey = Survey::find($id);
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
-        {
         $request->validated();
-        $survey->title = $request->title;
-        if($request->hasFile('image')){
-            $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
-            if($survey->image != null)
-                Storage::disk('public')->delete($survey->image);
-            $survey->image = $path;
-        }
-        $survey->update();
+        $user = User::find($id);
+        $user->firstName = $request->firstName;
+        $user->lastName = $request->lastName;
+        $user->email = $request->email;
+        $user->update();
 
-        return redirect('/surveys/'.$survey->id);   
-        }
+        return redirect('/users');
     }
 
     /**

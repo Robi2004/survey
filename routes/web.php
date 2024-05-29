@@ -32,7 +32,7 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
-    'can:admin,user'
+    'can:user|admin',
 ])->group(function () {
     Route::get('/homepage', [ChartController::class, 'homepage'])->name('homepage');
 
@@ -64,13 +64,19 @@ Route::middleware([
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/inscription', [UserController::class, 'inscription'])->name('users.inscription');
+    
+    Route::patch('/users/{id}', [UserController::class, 'update'])->name('users.update');
+
+    Route::put('/users/inscription/{id}', [UserController::class, 'validate'])->name('users.validate');
+
 
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 
-    Route::patch('/users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 });
