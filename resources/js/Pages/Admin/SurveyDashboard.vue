@@ -40,13 +40,10 @@ const editSurvey = (id) =>{
     router.get('/surveys/'+id+'/edit',);
 };
 
-const createSurvey = () =>{
-    router.get('/surveys/create',);
-};
 </script>
 
 <template>
-    <AppLayout title="SurveyDashboard">
+    <AppLayout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Gestion des sondages
@@ -58,7 +55,7 @@ const createSurvey = () =>{
                     <section class="text-gray-600 body-font">
                         <div class="container px-5 py-24 mx-auto">
                             <div class="mx-44 mb-8 ">
-                                <PrimaryButton @click="createSurvey">Créer un sondage</PrimaryButton>
+                                <PrimaryButton @click="createSurvey">Exporter la liste des sondages</PrimaryButton>
                             </div>
                             <div v-if="surveys.data.length">
                                 <div class="flex flex-col-reverse -m-4">

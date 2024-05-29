@@ -12,44 +12,44 @@ import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
 defineProps({
-    surveys: Object,
+    users: Object,
 });
 
-const showConfirmDeleteSurveyModal = ref(false)
+const showConfirmDeleteUserModal = ref(false)
 const CurrentElement = ref()
 
 const openModal = (item) => {
     CurrentElement.value = item;
-    showConfirmDeleteSurveyModal.value = true;
+    showConfirmDeleteUserModal.value = true;
 }
 
 const closeModal = () => {
-    showConfirmDeleteSurveyModal.value = false;
+    showConfirmDeleteUserModal.value = false;
 }
 
-const deleteSurvey = (id) =>{
-    router.delete('/surveys/'+id,{preserveScroll: true});
+const deleteUser = (id) =>{
+    router.delete('/users/'+id,{preserveScroll: true});
     closeModal();
 };
 
-const showSurvey = (id) =>{
-    router.get('/surveys/'+id,);
+const showUser = (id) =>{
+    router.get('/users/'+id,);
 };
 
-const editSurvey = (id) =>{
-    router.get('/surveys/'+id+'/edit',);
+const editUser = (id) =>{
+    router.get('/users/'+id+'/edit',);
 };
 
-const createSurvey = () =>{
-    router.get('/surveys/create',);
+const createUser = () =>{
+    router.get('/users/create',);
 };
 </script>
 
 <template>
-    <AppLayout title="SurveyDashboard">
+    <AppLayout title="UserDashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Gestion des sondages
+                Gestion des utilisateurs
             </h2>
         </template>
         <div class="py-12">
@@ -57,19 +57,24 @@ const createSurvey = () =>{
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
                     <section class="text-gray-600 body-font">
                         <div class="container px-5 py-24 mx-auto">
-                            <div class="mx-44 mb-8 ">
-                                <PrimaryButton @click="createSurvey">Créer un sondage</PrimaryButton>
+                            <div class="flex mx-44">
+                                <div class="mr-10 mb-8">
+                                    <PrimaryButton @click="createUser">Créer un utilisateur</PrimaryButton>
+                                </div>
+                                <div class="mb-8 ">
+                                    <PrimaryButton @click="createUser">Exporter les utilisateurs</PrimaryButton>
+                                </div>
                             </div>
-                            <div v-if="surveys.data.length">
+                            <div v-if="users.data.length">
                                 <div class="flex flex-col-reverse -m-4">
-                                    <div class="p-4 mx-44" :item v-for="item in surveys.data">
+                                    <div class="p-4 mx-44" :item v-for="item in users.data">
                                         <div class="mh-25 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                             <div class="p-6 flex">
-                                                <p class="font-extrabold flex-auto md:w-1/3" :href="'/surveys/'+item.id">{{ item.title }}</p>
-                                                <button @click="showSurvey(item.id)" type="button">
+                                                <p class="font-extrabold flex-auto md:w-1/3" :href="'/surveys/'+item.id">{{ item.firstName}} {{  item.lastName }}</p>
+                                                <button @click="showUser(item.id)" type="button">
                                                     <Show></Show>
                                                 </button> 
-                                                <button @click="editSurvey(item.id)" class="mx-2" type="button">
+                                                <button @click="editUser(item.id)" class="mx-2" type="button">
                                                     <Edit></Edit>
                                                 </button> 
                                                 <button @click="openModal(item)" type="button">
@@ -79,7 +84,7 @@ const createSurvey = () =>{
                                         </div>
                                     </div>
                                 </div>
-                                <ConfirmationModal :show="showConfirmDeleteSurveyModal" @close="closeModal">
+                                <ConfirmationModal :show="showConfirmDeleteUserModal" @close="closeModal">
                                     <template #title>
                                         <h2 class="text-lg font-semibold text-slate-800">Supprimer ce sondage ?</h2>
                                     </template>
@@ -88,12 +93,12 @@ const createSurvey = () =>{
                                     </template>
                                     <template #footer>
                                         <div class="mt-6 flex space-x-4">
-                                            <DangerButton @click="deleteSurvey(CurrentElement.id)">Supprimer</DangerButton>
+                                            <DangerButton @click="deleteUser(CurrentElement.id)">Supprimer</DangerButton>
                                             <SecondaryButton @click="closeModal">Annuler</SecondaryButton>
                                         </div>
                                     </template>
                                 </ConfirmationModal>
-                                <Pagination :meta="surveys.meta"/>
+                                <Pagination :meta="users.meta"/>
                             </div>
                         </div>
                     </section>

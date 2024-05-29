@@ -5,15 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Question;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
-use App\Http\Resources\AnswerResource;
 use App\Http\Resources\QuestionResource;
-use App\Http\Resources\SurveyResource;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Answer;
 use App\Models\Survey;
 use Inertia\Inertia;
-use App\Models\UserAnswer;
-use Psy\Readline\Hoa\ConsoleInput;
 
 class QuestionController extends Controller
 {
@@ -77,10 +72,10 @@ class QuestionController extends Controller
         $allAnswers = $request->answers;
         $request->validated();
         if(Question::where('id',$id)->exists()){
-            $question = Question::find($id)->get();
-            $question[0]->type = $request->type;
-            $question[0]->content = $request->content;
-            if($question[0]->type != "Text"){
+            $question = Question::find($id);
+            $question->type = $request->type;
+            $question->content = $request->content;
+            if($question->type != "Text"){
                 if(isset($request->oldAnswers)){
                     foreach($request->oldAnswers as $oldAnswer){
                         $answer = Answer::where('id',$oldAnswer['id'])->get();
@@ -111,8 +106,8 @@ class QuestionController extends Controller
                 }
             }
         }
-        $question[0]->update();
-        return redirect('/questions/'.$question[0]->id_survey);
+        $question->update();
+        return redirect('/questions/'.$question->id_survey);
         
     }
 

@@ -51,7 +51,7 @@ const createSurvey = () =>{
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AppLayout title="HomePage">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Accueil
