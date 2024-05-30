@@ -4,6 +4,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\PDFController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -57,6 +58,10 @@ Route::middleware([
     'verified',
     'role:admin',
 ])->group(function () {
+
+    Route::get('/pdf', [PDFController::class, 'index'])->name('pdf.index');
+
+    Route::get('/pdf/export', [PDFController::class, 'export'])->name('pdf.export');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 

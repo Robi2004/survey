@@ -40,6 +40,10 @@ const editSurvey = (id) =>{
     router.get('/surveys/'+id+'/edit',);
 };
 
+const exportSurvey = () =>{
+    router.get('/pdf');
+};
+
 </script>
 
 <template>
@@ -55,7 +59,7 @@ const editSurvey = (id) =>{
                     <section class="text-gray-600 body-font">
                         <div class="container px-5 py-24 mx-auto">
                             <div class="mx-44 mb-8 ">
-                                <PrimaryButton @click="createSurvey">Exporter la liste des sondages</PrimaryButton>
+                                <PrimaryButton @click="exportSurvey">Exporter la liste des sondages</PrimaryButton>
                             </div>
                             <div v-if="surveys.data.length">
                                 <div class="flex flex-col-reverse -m-4">
