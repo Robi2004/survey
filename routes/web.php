@@ -5,6 +5,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ExcelController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -62,6 +63,10 @@ Route::middleware([
     Route::get('/pdf', [PDFController::class, 'index'])->name('pdf.index');
 
     Route::get('/pdf/export', [PDFController::class, 'export'])->name('pdf.export');
+    
+    Route::get('/excel', [ExcelController::class, 'index'])->name('excel.index');
+
+    Route::get('/excel/export', [ExcelController::class, 'export'])->name('excel.export');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
