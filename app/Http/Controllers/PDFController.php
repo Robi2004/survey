@@ -25,7 +25,7 @@ class PDFController extends Controller
     {
         $surveys = SurveyResource::collection(Survey::all());
 
-        $pdf = PDF::loadView('pdf/pdf', ['data' => $surveys, 'title'=> $request->title,'image'=>$request->image]);
-        return $pdf->stream('Posts.pdf');
+        $pdf = PDF::loadView('pdf/pdf', ['data' => $surveys, 'title'=> $request->input('title'),'image'=>$request->input('image')]);
+        return $pdf->stream('Survey'.time().'.pdf');
     }
 }

@@ -11,9 +11,13 @@
     </div>
     @foreach($data as $survey)
         <div>
-            @if ($title == true)
-            <h3 style="text-align:center">Titre : {{$survey['title']}}</h3>
-            @endif  
+            @if($title)
+                <h3 style="text-align:center">Titre : {{$survey['title']}}</h3>
+            @endif
+            @if($image)
+                <img src="" alt="Image">
+                <!--<img src="{{ asset('storage/'.$survey['image']) }}" alt="Image">-->
+            @endif
         </div>
     @endforeach
 </body>

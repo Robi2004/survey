@@ -61,7 +61,7 @@ Route::middleware([
 
     Route::get('/pdf', [PDFController::class, 'index'])->name('pdf.index');
 
-    Route::post('/pdf', [PDFController::class, 'export'])->name('pdf.export');
+    Route::get('/pdf/export', [PDFController::class, 'export'])->name('pdf.export');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 

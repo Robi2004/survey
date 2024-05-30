@@ -25,7 +25,6 @@ function submit (){
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
                     <section class="text-gray-600 body-font">
-                        {{ form }}
                     <div class="container px-5 py-24 mx-auto">
                         <div class="flex flex-wrap -m-4">
                             <div class="flex flex-col w-full mb-12">
@@ -42,8 +41,8 @@ function submit (){
                                                 <input type="checkbox" v-model="form.image" inputId="Checkbox" name="Checkbox" value="Image" />
                                                 <label :for="'Checkbox'" class="ml-2">Image</label>
                                             </div>
-                                            <div class="p-2 w-full mt-4 ">
-                                            <button type="submit" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Modifier</button>
+                                            <div class="mt-8 w-1/7 mx-auto">
+                                                <a :href="'pdf/export?title='+form.title+'&&image='+form.image" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Exporter</a>
                                             </div>
                                         </div>
                                     </form>
