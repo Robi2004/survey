@@ -35,7 +35,7 @@ class SurveyController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-{       if(Auth::user()->can('user'))
+    {       if(Auth::user()->can('user'))
         {
         return Inertia::render('Survey/CreateSurvey');
         }
@@ -123,6 +123,26 @@ class SurveyController extends Controller
                 Storage::disk('public')->delete($survey->image);
             }
             $survey->delete();
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function answer($id)
+    {
+        $survey = Survey::where('id', $id)->get();
+        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        {
+            $survey['questions'] = Question::where('id_survey',$id)->get();
+            foreach($survey['questions'] as $question){
+                if($question->type == "Text"){
+                    
+                }
+            $question['answer'] = Answer::where('id_question', $question->id)->get();
+        }
+            return Inertia::render('Survey/AnswerSurvey', ['survey' => $survey]);
         }
     }
 

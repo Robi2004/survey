@@ -35,6 +35,9 @@ Route::middleware([
     Route::get('/homepage', [ChartController::class, 'homepage'])->name('homepage');
 
     Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys.index');
+    
+    Route::get('/surveys/{id}/answer', [SurveyController::class, 'answer'])->name('surveys.answer');
+
     Route::get('/surveys/{id}/edit', [SurveyController::class, 'edit'])->name('surveys.edit');
 
     Route::get('/surveys/{id}', [SurveyController::class, 'show'])->name('surveys.show');

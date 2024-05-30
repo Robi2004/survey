@@ -28,11 +28,8 @@ const showAnswer = (id) =>{
                             <div class="flex flex-col w-full mb-12">
                                     <h1 class="sm:text-3xl text-2xl text-center font-medium title-font text-gray-900">{{ survey[0].title }}</h1>   
                                     <div class="my-8 text-center">
-                                        <PrimaryButton @click="showAnswer(survey[0].id)">Voir les résultats</PrimaryButton>
+                                        <PrimaryButton @click="showAnswer(survey[0].id)">Retourner au Sondage</PrimaryButton>
                                     </div> 
-                                <div v-if="survey[0].image" class="rounded-lg h-72 overflow-hidden">
-                                    <img class="object-center h-full w-full" :src="'/storage/'+ survey[0].image" alt="Aucune image existante">
-                                </div>
                                 <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                     <h2 class="sm:text-2xl text-2xl text-center font-medium title-font my-4 text-gray-900">Questions</h2>
                                     <div v-for="item in survey['questions']">
