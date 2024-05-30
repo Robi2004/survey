@@ -43,6 +43,10 @@ const editUser = (id) =>{
 const createUser = () =>{
     router.get('/users/create',);
 };
+
+const ExportUser = () =>{
+    router.get('/excel',);
+};
 </script>
 
 <template>
@@ -62,7 +66,7 @@ const createUser = () =>{
                                     <PrimaryButton @click="createUser">Créer un utilisateur</PrimaryButton>
                                 </div>
                                 <div class="mb-8 ">
-                                    <PrimaryButton @click="createUser">Exporter les utilisateurs</PrimaryButton>
+                                    <PrimaryButton @click="ExportUser">Exporter les utilisateurs</PrimaryButton>
                                 </div>
                             </div>
                             <div v-if="users.data.length">
