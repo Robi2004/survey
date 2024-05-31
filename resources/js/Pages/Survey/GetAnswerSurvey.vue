@@ -29,7 +29,6 @@ const submit = (id) =>{
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
                 <section class="text-gray-600 body-font">
-                    {{ form.questions }}
                 <div class="container px-5 py-24 mx-auto">
                     <div class="flex flex-wrap -m-4">
                         <div class="flex flex-col w-full mb-12">

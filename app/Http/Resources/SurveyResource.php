@@ -19,6 +19,7 @@ class SurveyResource extends JsonResource
             'title' => $this->title,
             'image' => $this->image,
             'id_user' => $this->id_user,
+            'locked' => $this->locked,
         ];
     }
 }

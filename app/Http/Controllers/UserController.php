@@ -33,7 +33,7 @@ class UserController extends Controller
      */
     public function inscription()
     {
-        $users = UserResource::collection(User::doesntHave('roles')->paginate(12));
+        $users = UserResource::collection(User::where('password', '!=',null)->doesntHave('roles')->paginate(12));
         return Inertia::render('Admin/User/InscriptionDashboard', ['users' => $users]);
     }
 

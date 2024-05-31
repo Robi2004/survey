@@ -18,12 +18,11 @@ class AnswerController extends Controller
      */
     public function store(StoreAnswerRequest $request, $id)
     {
-        $survey = Survey::where('id',$id)->get();
         $user = User::create(array_merge($request->validated(),[
             'firstName' => $request->firstName,
             'lastName' => $request->lastName,
             'city' => $request->city,
-            'id_survey' => $survey[0]->id,
+            'id_survey' => $id,
         ]));
         foreach($request->questions as $question){
             if($question['type'] == "Text"){
@@ -38,9 +37,40 @@ class AnswerController extends Controller
                     ]);
                 }
             }
+            if($question['type'] == "Select"){
+                if($question['userAnswers'] != null){
+                    $answer = Answer::find($question['userAnswers']);
+                    UserAnswer::create([
+                        'id_user' => $user->id,
+                        'id_answer' => $answer->id,
+                    ]);
+                }
+            }
+            if($question['type'] == "CheckBox"){
+                $searchAnswer = Answer::where('id_question',$question['id'])->get();
+                foreach($searchAnswer as $newAnswer)
+                if($question[$newAnswer->id] == true){
+                    UserAnswer::create([
+                        'id_user' => $user->id,
+                        'id_answer' => $newAnswer->id,
+                    ]);
+                }
+            }
+            $survey = Survey::find($id);
+            $survey->locked = true;
+            $survey->update();
         }
 
-        return redirect('/questions/');     
+        return redirect('/answers/'.$id.'/thanks');     
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function thanksShow($id)
+    {
+        $survey = Survey::where('id',$id)->get();
+        return Inertia::render('Survey/ThanksSurvey', ['survey' => $survey]);
     }
 
     /**

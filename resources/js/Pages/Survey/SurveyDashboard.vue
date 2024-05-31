@@ -69,7 +69,7 @@ const createSurvey = () =>{
                                                 <button @click="showSurvey(item.id)" type="button">
                                                     <Show></Show>
                                                 </button> 
-                                                <button @click="editSurvey(item.id)" class="mx-2" type="button">
+                                                <button v-if="!item.locked" @click="editSurvey(item.id)" class="mx-2" type="button">
                                                     <Edit></Edit>
                                                 </button> 
                                                 <button @click="openModal(item)" type="button">

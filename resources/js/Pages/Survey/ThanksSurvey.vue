@@ -1,5 +1,7 @@
 <script setup>
 
+import ApplicationMark from '@/Components/ApplicationMark.vue';
+
 const props = defineProps({
     survey: Object,
 });
@@ -7,13 +9,13 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="py-12">
-        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">  
-                <section class="text-gray-600 body-font">
-                    <h2 class="text-center">Merci d'avoir répondu au sondage : {{ survey[0].content }}</h2>
-                </section>
+    <div class="py-12 my-auto h-full">
+        <div class="max-w-8xl my-auto h-full sm:px-6 lg:px-8">
+            <div class="mb-4 flex items-center justify-center">
+                <ApplicationMark class="block h-12 " />
+                <h2 class="text-xl ml-4">Sondix</h2>
             </div>
+            <h2 class="text-center text-2xl">Merci d'avoir répondu au sondage : {{ survey[0].title }}</h2>
         </div>
     </div>
 </template>

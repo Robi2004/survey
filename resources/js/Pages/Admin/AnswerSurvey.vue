@@ -108,7 +108,7 @@ const editAnswer = (id) =>{
                                     <div v-if="survey['questions'].length == 0"><p class="text-center">Aucun questions existante pour ce sondage.</p></div>
                                     <div class="text-center">
                                         <span class="inline-block h-1 w-10 rounded bg-indigo-500 mt-8 mb-6"></span>
-                                        <h2 class="text-gray-900 font-medium title-font tracking-wider text-sm">{{ survey.user[0].firstName }}</h2>
+                                        <h2 class="text-gray-900 font-medium title-font tracking-wider text-sm">Créateur du sondage : {{ survey.user[0].firstName }}  {{ survey.user[0].lastName }}</h2>
                                     </div>
                                     </div>                      
                                 </div>

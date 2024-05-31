@@ -37,9 +37,10 @@ class SurveyController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {       if(Auth::user()->can('user'))
+    {       
+        if(Auth::user()->can('user'))
         {
-        return Inertia::render('Survey/CreateSurvey');
+            return Inertia::render('Survey/CreateSurvey');
         }
     }
 
@@ -109,8 +110,6 @@ class SurveyController extends Controller
             $survey->image = $path;
         }
         $survey->update();
-
-        return redirect('/surveys/'.$survey->id);   
         }
     }
 
