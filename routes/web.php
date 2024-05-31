@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\AnswerController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,6 +16,9 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
     ]);
 });
+
+Route::get('/surveys/{id}/getAnswer', [SurveyController::class, 'getAnswer'])->name('surveys.getAnswer');
+Route::post('/answers/{id}', [AnswerController::class, 'store'])->name('answers.store');
 
 Route::middleware([
     'auth:sanctum',
@@ -88,4 +92,10 @@ Route::middleware([
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    
+    Route::get('/answers/{id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
+
+    Route::patch('/answers/{id}', [AnswerController::class, 'update'])->name('answers.update');
+    
+    Route::delete('/answers/{id}', [AnswerController::class, 'destroy'])->name('answers.destroy');
 });

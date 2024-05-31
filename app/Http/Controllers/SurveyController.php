@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Survey;
 use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
+use App\Http\Resources\AnswerResource;
 use App\Http\Resources\SurveyResource;
 use App\Models\Answer;
 use App\Models\Question;
+use App\Models\UserAnswer;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
@@ -55,6 +57,7 @@ class SurveyController extends Controller
                 'title' => $request->title,
                 'image' => $path ?? null,
                 'id_user' => Auth::id(),
+                'locked' => false,
             ]));
             return redirect('/surveys/'.$survey->id);   
         }
@@ -127,7 +130,7 @@ class SurveyController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Show the all the answer from survey
      */
     public function answer($id)
     {
@@ -138,12 +141,35 @@ class SurveyController extends Controller
             $survey['questions'] = Question::where('id_survey',$id)->get();
             foreach($survey['questions'] as $question){
                 if($question->type == "Text"){
-                    
+                    $question['answer'] = AnswerResource::collection(Answer::where('id_question', $question->id)->paginate(4));
                 }
-            $question['answer'] = Answer::where('id_question', $question->id)->get();
+                else{
+                    $question['answer'] = Answer::where('id_question', $question->id)->get();
+                    foreach($question['answer'] as $answer)
+                    {
+                        $answer['count'] = count(UserAnswer::where('id_answer', $answer->id)->get());
+                    }
+                }
+            }
+            if(Auth::user()->can('admin')){
+                return Inertia::render('Admin/AnswerSurvey', ['survey' => $survey]);
+            }else{
+                return Inertia::render('Survey/AnswerSurvey', ['survey' => $survey]);
+            }
         }
-            return Inertia::render('Survey/AnswerSurvey', ['survey' => $survey]);
-        }
+    }
+
+    /**
+     * Display the survey for getting answers
+     */
+    public function getAnswer($id)
+    {
+        $survey = Survey::where('id', $id)->get();
+        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+        $survey['questions'] = Question::where('id_survey',$id)->get();
+        foreach($survey['questions'] as $question){
+        $question['answer'] = Answer::where('id_question', $question->id)->get();}
+        return Inertia::render('Survey/GetAnswerSurvey', ['survey' => $survey]);
     }
 
 }

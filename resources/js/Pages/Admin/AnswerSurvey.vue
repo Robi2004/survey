@@ -7,14 +7,36 @@ import ConfirmationModal from '@/Components/ConfirmationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Trash from '@/Components/TrashIcon.vue';
 import Edit from '@/Components/EditIcon.vue';
+import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
 defineProps({
     survey: Object,
 });
 
+const showConfirmDeleteAnswerModal = ref(false)
+const CurrentElement = ref()
+
+const openModal = (item) => {
+    CurrentElement.value = item;
+    showConfirmDeleteAnswerModal.value = true;
+}
+
+const closeModal = () => {
+    showConfirmDeleteAnswerModal.value = false;
+}
+
+const deleteAnswer = (id) =>{
+    router.delete('/answers/'+id,{preserveScroll: true});
+    closeModal();
+};
+
 const showSurvey = (id) =>{
     router.get('/surveys/'+id,);
+};
+
+const editAnswer = (id) =>{
+    router.get('/answers/'+id+'/edit',);
 };
 </script>
 
@@ -46,11 +68,31 @@ const showSurvey = (id) =>{
                                                         <div class="border-2 border-gray-200 bg-slate-50 border-opacity-60 rounded-lg overflow-hidden">
                                                             <div class="p-6 flex">
                                                                 <p class="font-extrabold flex-auto md:w-1/3" :href="'/questions/'+answer.id">{{ answer.content }}</p>
+                                                                <button @click="editAnswer(answer.id)" class="mx-2" type="button">
+                                                                    <Edit></Edit>
+                                                                </button> 
+                                                                <button @click="openModal(answer)" type="button">
+                                                                    <Trash></Trash>
+                                                                </button> 
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <Pagination :meta="item.answer.meta"/>
+                                            <Pagination :meta="item.answer.meta"/>
+                                            <ConfirmationModal :show="showConfirmDeleteAnswerModal" @close="closeModal">
+                                                <template #title>
+                                                    <h2 class="text-lg font-semibold text-slate-800">Supprimer cette Réponse ?</h2>
+                                                </template>
+                                                <template #content>
+                                                    <p class="text-lg font-semibold text-slate-600">{{ CurrentElement.content }}</p>
+                                                </template>
+                                                <template #footer>
+                                                    <div class="mt-6 flex space-x-4">
+                                                        <DangerButton @click="deleteAnswer(CurrentElement.id)">Supprimer</DangerButton>
+                                                        <SecondaryButton @click="closeModal">Annuler</SecondaryButton>
+                                                    </div>
+                                                </template>
+                                            </ConfirmationModal>
                                             </div>
                                             <h2 v-else class="text-center">Aucun Réponse existante</h2>
                                         </div>

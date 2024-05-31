@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->tinyText('type');
             $table->tinyText('content');
-            $table->foreignId('id_survey')->constrained(table: 'surveys')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('id_survey')->constrained(table: 'surveys')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

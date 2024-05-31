@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('surveys', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->tinyText('title');
             $table->tinyText('image');
             $table->foreignId('id_user')->constrained(table: 'users', indexName: 'id')->onUpdate('cascade')->onDelete('cascade');
+            $table->boolean('locked');
             $table->timestamps();
         });
     }

@@ -30,8 +30,12 @@ const showAnswer = (id) =>{
                                     <div class="my-8 text-center">
                                         <PrimaryButton @click="showAnswer(survey[0].id)">Voir les résultats</PrimaryButton>
                                     </div> 
-                                <div v-if="survey[0].image" class="rounded-lg h-72 overflow-hidden">
+                                <div v-if="survey[0].image" class="rounded-lg h-72 w-96 overflow-hidden mx-auto mt-6">
                                     <img class="object-center h-full w-full" :src="'/storage/'+ survey[0].image" alt="Aucune image existante">
+                                </div>
+                                <div class="text-center">
+                                    <h2>Lien pour répondre au sondage :</h2>
+                                    <a :href="'/surveys/'+survey[0].id+'/getAnswer'" class="underline">localhost:8000/surveys{{ survey[0].id }}/getAnswer</a>
                                 </div>
                                 <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                     <h2 class="sm:text-2xl text-2xl text-center font-medium title-font my-4 text-gray-900">Questions</h2>
