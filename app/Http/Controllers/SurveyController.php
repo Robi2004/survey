@@ -129,7 +129,7 @@ class SurveyController extends Controller
     }
 
     /**
-     * Show the all the answer from survey
+     * Show all the answer from survey
      */
     public function answer($id)
     {

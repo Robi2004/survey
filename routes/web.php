@@ -15,7 +15,7 @@ Route::get('/', function () {
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
-});
+})->name('home');
 
 Route::get('/surveys/{id}/getAnswer', [SurveyController::class, 'getAnswer'])->name('surveys.getAnswer');
 Route::post('/answers/{id}', [AnswerController::class, 'store'])->name('answers.store');
