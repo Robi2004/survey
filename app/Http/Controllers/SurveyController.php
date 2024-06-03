@@ -71,6 +71,11 @@ class SurveyController extends Controller
     {
         $survey = Survey::where('id', $id)->get();
         $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+        if(count(User::where('id_survey',$survey['user'][0]->id)->get()) != 0){
+            $survey['HaveAnswer'] = true;
+        }else{
+            $survey['HaveAnswer'] = false;
+        }
         if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
         {
             $survey['questions'] = Question::where('id_survey',$id)->get();

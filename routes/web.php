@@ -7,14 +7,27 @@ use App\Http\Controllers\ChartController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\AnswerController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
+    if(Auth::check()) {       
+        if(Auth::user()->can('admin') || Auth::user()->can('user'))     
+        return redirect('/homepage');
+    else{
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+        ]);
+    }
+    }else{
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+        ]);
+    }
+
 })->name('home');
 
 Route::get('/surveys/{id}/getAnswer', [SurveyController::class, 'getAnswer'])->name('surveys.getAnswer');

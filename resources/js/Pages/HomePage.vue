@@ -29,7 +29,6 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-    if(props.surveys.data[0] != null){
     const ctx = document.getElementById('myChart');
     const myChart = new Chart(ctx, {
         data: dataAnswers,
@@ -41,7 +40,6 @@ onMounted(() => {
             }
         }
     });
-}
 })
 
 const createSurvey = () =>{
@@ -63,8 +61,8 @@ const createSurvey = () =>{
                     <section class="text-gray-600 body-font">
                         <div class="container px-5 py-24 mx-auto">
                             <div v-if="surveys.data[0] == null">
-                                <h2 class="text-center text-2xl font-medium title-font mb-4 text-gray-900">Vous n'avez créer aucun sondage !</h2>
-                                <div class="mt-20 text-center">
+                                <h2 class="text-center text-2xl font-medium title-font text-gray-900">Vous n'avez créer aucun sondage !</h2>
+                                <div class="mt-16 text-center mb-12">
                                     <PrimaryButton @click="createSurvey">Créer votre premier sondage</PrimaryButton>
                                 </div>
                             </div>
