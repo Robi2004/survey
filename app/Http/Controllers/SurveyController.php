@@ -71,11 +71,6 @@ class SurveyController extends Controller
     {
         $survey = Survey::where('id', $id)->get();
         $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        if(count(User::where('id_survey',$survey['user'][0]->id)->get()) != 0){
-            $survey['HaveAnswer'] = true;
-        }else{
-            $survey['HaveAnswer'] = false;
-        }
         if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
         {
             $survey['questions'] = Question::where('id_survey',$id)->get();
@@ -91,10 +86,14 @@ class SurveyController extends Controller
     public function edit($id)
     {
         $survey = Survey::where('id', $id)->get();
-        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
-        {
-            return Inertia::render('Survey/EditSurvey', ['survey' => $survey]);
+        if(!$survey[0]->locked){
+            $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+            if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+            {
+                return Inertia::render('Survey/EditSurvey', ['survey' => $survey]);
+            }
+        }else{
+            return redirect('/surveys/'.$survey[0]->id);   
         }
     }
 
@@ -124,12 +123,15 @@ class SurveyController extends Controller
     public function destroy($id)
     {
         $survey = Survey::find($id);
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        if(Auth::user()->can('admin') || $survey->id_user == Auth::id())
         {
             if($survey->image != null){
                 Storage::disk('public')->delete($survey->image);
             }
             $survey->delete();
+            foreach(User::where('id_survey',$id) as $user){
+                $user->delete();
+            }
         }
     }
 

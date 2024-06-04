@@ -27,13 +27,13 @@ const showAnswer = (id) =>{
                         <div class="flex flex-wrap -m-4">
                             <div class="flex flex-col w-full mb-12">
                                     <h1 class="sm:text-3xl text-2xl text-center font-medium title-font text-gray-900">{{ survey[0].title }}</h1>
-                                    <div class="my-8 text-center" v-if="survey['HaveAnswer']">
+                                    <div class="my-8 text-center" v-if="survey[0].locked">
                                         <PrimaryButton @click="showAnswer(survey[0].id)">Voir les résultats</PrimaryButton>
                                     </div> 
                                 <div v-if="survey[0].image" class="rounded-lg h-72 w-96 overflow-hidden mx-auto mt-6">
                                     <img class="object-center h-full w-full" :src="'/storage/'+ survey[0].image" alt="Aucune image existante">
                                 </div>
-                                <div class="text-center mt-6" v-if="survey['questions'].length != 0">
+                                <div class="text-center mt-10 mb-10" v-if="survey['questions'].length != 0">
                                     <h2>Lien pour répondre au sondage :</h2>
                                     <a :href="'/surveys/'+survey[0].id+'/getAnswer'" class="underline">localhost:8000/surveys/{{ survey[0].id }}/getAnswer</a>
                                 </div>
