@@ -47,12 +47,11 @@ class AnswerController extends Controller
                 }
             }
             if($question['type'] == "CheckBox"){
-                $searchAnswer = Answer::where('id_question',$question['id'])->get();
-                foreach($searchAnswer as $newAnswer)
-                if($question[$newAnswer->id] == true){
+                foreach($question['userAnswers'] as $newAnswer){
+                    $answer = Answer::find($newAnswer);
                     UserAnswer::create([
                         'id_user' => $user->id,
-                        'id_answer' => $newAnswer->id,
+                        'id_answer' => $answer->id,
                     ]);
                 }
             }

@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3';
+import ApplicationMark from '@/Components/ApplicationMark.vue';
 
 defineProps({
     canLogin: {
@@ -20,7 +21,8 @@ const logout = () => {
     <Head title="Welcome" />
     <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white">
         <div class="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-            <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
+            <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">   
+                <ApplicationMark class="mx-auto mb-6 h-12 w-auto" />
                 <h1 class="text-black text-center text-2xl dark:text-white">Bienvenu sur le site de Sondix</h1>
                 <header class="items-center py-10">
                     <nav v-if="canLogin" class="-mx-3 flex flex-1 justify-center">

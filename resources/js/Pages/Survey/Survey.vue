@@ -35,7 +35,7 @@ const showAnswer = (id) =>{
                                 </div>
                                 <div class="text-center mt-10 mb-10" v-if="survey['questions'].length != 0">
                                     <h2>Lien pour répondre au sondage :</h2>
-                                    <a :href="'/surveys/'+survey[0].id+'/getAnswer'" class="underline">localhost:8000/surveys/{{ survey[0].id }}/getAnswer</a>
+                                    <a :href="'/surveys/'+survey[0].id+'/getAnswer'" class="underline">{{survey['url']}}/surveys/{{ survey[0].id }}/getAnswer</a>
                                 </div>
                                 <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                     <h2 class="sm:text-2xl text-2xl text-center font-medium title-font my-4 text-gray-900">Questions</h2>

@@ -67,10 +67,10 @@ const exportSurvey = () =>{
                                         <div class="mh-25 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                             <div class="p-6 flex">
                                                 <p class="font-extrabold flex-auto md:w-1/3" :href="'/surveys/'+item.id">{{ item.title }}</p>
-                                                <button @click="showSurvey(item.id)" type="button">
+                                                <button @click="showSurvey(item.id)" class="mr-2" type="button">
                                                     <Show></Show>
                                                 </button>
-                                                <button v-if="!item.locked" @click="editSurvey(item.id)" class="mx-2" type="button">
+                                                <button v-if="!item.locked" @click="editSurvey(item.id)" class="mr-2" type="button">
                                                     <Edit></Edit>
                                                 </button> 
                                                 <button @click="openModal(item)" type="button">

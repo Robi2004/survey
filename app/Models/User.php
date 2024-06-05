@@ -67,4 +67,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    // Définir la relation avec les réponses
+    public function answers()
+    {
+        return $this->hasManyThrough(Answer::class, UserAnswer::class, 'id_user', 'id', 'id', 'id_answer');
+    }
 }

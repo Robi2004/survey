@@ -25,6 +25,7 @@ class StoreAnswerRequest extends FormRequest
             'firstName' => ['required'],
             'lastName' => ['required'],
             'city' => ['required'],
+            'questions.*.userAnswers' => 'required',
         ];
     }
 }

@@ -74,10 +74,16 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = UserResource::collection(User::where('id', $id)->get());
+        $user = User::find($id);
+        if($user->can('admin') || $user->can('user')){
+            $user = UserResource::collection(User::where('id', $id)->get());
+            $surveyCount = count(Survey::where('id_user',$id)->get());
+            return Inertia::render('Admin/User/User', ['user' => $user, 'surveyCount' => $surveyCount]);
+        }else{
+            $user = UserResource::collection(User::where('id', $id)->get());
+            return Inertia::render('Admin/User/Inscription',['user' => $user]);
+        }
         
-        $surveyCount = count(Survey::where('id_user',$id)->get());
-        return Inertia::render('Admin/User/User', ['user' => $user, 'surveyCount' => $surveyCount]);
     }
 
     /**

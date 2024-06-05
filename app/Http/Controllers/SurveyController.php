@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
 use App\Http\Resources\AnswerResource;
 use App\Http\Resources\SurveyResource;
+use App\Http\Resources\UserResource;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\UserAnswer;
@@ -76,6 +77,7 @@ class SurveyController extends Controller
             $survey['questions'] = Question::where('id_survey',$id)->get();
             foreach($survey['questions'] as $question){
             $question['answer'] = Answer::where('id_question', $question->id)->get();}
+            $survey['url'] = request()->root();
             return Inertia::render('Survey/Survey', ['survey' => $survey]);
         }
     }
@@ -144,19 +146,8 @@ class SurveyController extends Controller
         $survey['user'] = User::where('id',$survey[0]->id_user)->get();
         if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
         {
+            $survey['userAnswer'] = UserResource::collection(User::with('answers')->where('id_survey', $id)->paginate(5));
             $survey['questions'] = Question::where('id_survey',$id)->get();
-            foreach($survey['questions'] as $question){
-                if($question->type == "Text"){
-                    $question['answer'] = AnswerResource::collection(Answer::where('id_question', $question->id)->paginate(4));
-                }
-                else{
-                    $question['answer'] = Answer::where('id_question', $question->id)->get();
-                    foreach($question['answer'] as $answer)
-                    {
-                        $answer['count'] = count(UserAnswer::where('id_answer', $answer->id)->get());
-                    }
-                }
-            }
             if(Auth::user()->can('admin')){
                 return Inertia::render('Admin/AnswerSurvey', ['survey' => $survey]);
             }else{
@@ -174,7 +165,9 @@ class SurveyController extends Controller
         $survey['user'] = User::where('id',$survey[0]->id_user)->get();
         $survey['questions'] = Question::where('id_survey',$id)->get();
         foreach($survey['questions'] as $question){
-        $question['answer'] = Answer::where('id_question', $question->id)->get();}
+            if($question->type != "Text")
+                $question['answer'] = Answer::where('id_question', $question->id)->get();
+        }
         return Inertia::render('Survey/GetAnswerSurvey', ['survey' => $survey]);
     }
 
