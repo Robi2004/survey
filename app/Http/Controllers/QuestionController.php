@@ -16,17 +16,27 @@ class QuestionController extends Controller
      * Display a listing of the resource.
      */
     public function index($id)
-    {
+    {        
+        $survey = Survey::where('id', $id)->get();
+        if(!$survey[0]->locked){
         $questions = QuestionResource::collection(Question::where('id_survey',$id)->paginate(12)); // Paginate après avoir récupéré tous les articles
         return Inertia::render('Question/QuestionDashboard', ['questions' => $questions, 'id_survey'=>$id]);
+        }else{
+            return redirect('/surveys/'.$survey[0]->id);   
+        }
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create($id)
-    {
-        return Inertia::render('Question/CreateQuestion', ['id_survey'=>$id]);
+    {       
+        $survey = Survey::where('id', $id)->get();
+        if(!$survey[0]->locked){
+            return Inertia::render('Question/CreateQuestion', ['id_survey'=>$id]);
+        }else{
+            return redirect('/surveys/'.$survey[0]->id);   
+        }
     }
 
     /**
@@ -56,12 +66,15 @@ class QuestionController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-    {
-        $surveys = Survey::all();
+    {        
         $question = Question::where('id',$id)->get();
         $question['survey'] = Survey::where('id',$question[0]->id_survey)->get();
         $question['answers'] = Answer::where('id_question',$id)->get();
-        return Inertia::render('Question/EditQuestion', ['question' => $question, 'surveys' => $surveys]);
+        if(!$question['survey'][0]->locked){
+            return Inertia::render('Question/EditQuestion', ['question' => $question]);
+        }else{
+            return redirect('/surveys/'.$survey[0]->id);  
+        }
     }
 
     /**

@@ -4,7 +4,6 @@ import { onBeforeMount, reactive } from 'vue';
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
-    surveys : Object,
     question: Object,
     errors: Object,
 });

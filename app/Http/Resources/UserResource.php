@@ -19,6 +19,9 @@ class UserResource extends JsonResource
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
             'email' => $this->email,
+            'city' => $this->whenHas('city'),
+            'answer' => AnswerResource::collection($this->whenLoaded('answers')),
+            'creation_date' => $this->created_at
         ];;
     }
 }

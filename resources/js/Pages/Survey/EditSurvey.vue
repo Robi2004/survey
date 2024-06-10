@@ -62,9 +62,15 @@ function submit (){
                                             <label for="image" class="leading-7 text-sm text-gray-600">Image</label>
                                             <input type="file" accept="image/png, image/gif, image/jpeg" @input="form.image = $event.target.files[0]" id="image" name="image" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                         </div>
+                                        <div class="relative mt-6">
+                                            <label for="image" class="leading-7 text-sm text-gray-600">Voici l'image acctuellement lié à se sondage :</label>
+                                            <div v-if="survey[0].image" class="rounded-lg h-36 w-36 overflow-hidden mx-auto mt-6">
+                                                <img class="object-center h-full w-full" :src="'/storage/'+ survey[0].image" alt="Aucune image existante">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="mt-8 w-full">
-                                    <button type="submit" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Modifier</button>
+                                    <button type="submit" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Envoyer</button>
                                     </div>
                                 </div>
                                 </div>

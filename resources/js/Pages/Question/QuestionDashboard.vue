@@ -7,7 +7,6 @@ import ConfirmationModal from '@/Components/ConfirmationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Trash from '@/Components/TrashIcon.vue';
 import Edit from '@/Components/EditIcon.vue';
-import Show from '@/Components/ShowIcon.vue';
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 

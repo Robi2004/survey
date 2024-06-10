@@ -31,6 +31,7 @@ class User extends Authenticatable
         'email',
         'password',
         'city',
+        'id_survey',
     ];
 
     /**
@@ -65,5 +66,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    
+    // Définir la relation avec les réponses
+    public function answers()
+    {
+        return $this->hasManyThrough(Answer::class, UserAnswer::class, 'id_user', 'id', 'id', 'id_answer');
     }
 }

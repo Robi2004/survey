@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Survey;
 use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
+use App\Http\Resources\AnswerResource;
 use App\Http\Resources\SurveyResource;
+use App\Http\Resources\UserResource;
 use App\Models\Answer;
 use App\Models\Question;
+use App\Models\UserAnswer;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
@@ -35,9 +38,10 @@ class SurveyController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-{       if(Auth::user()->can('user'))
+    {       
+        if(Auth::user()->can('user'))
         {
-        return Inertia::render('Survey/CreateSurvey');
+            return Inertia::render('Survey/CreateSurvey');
         }
     }
 
@@ -55,6 +59,7 @@ class SurveyController extends Controller
                 'title' => $request->title,
                 'image' => $path ?? null,
                 'id_user' => Auth::id(),
+                'locked' => false,
             ]));
             return redirect('/surveys/'.$survey->id);   
         }
@@ -72,6 +77,7 @@ class SurveyController extends Controller
             $survey['questions'] = Question::where('id_survey',$id)->get();
             foreach($survey['questions'] as $question){
             $question['answer'] = Answer::where('id_question', $question->id)->get();}
+            $survey['url'] = request()->root();
             return Inertia::render('Survey/Survey', ['survey' => $survey]);
         }
     }
@@ -82,10 +88,14 @@ class SurveyController extends Controller
     public function edit($id)
     {
         $survey = Survey::where('id', $id)->get();
-        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
-        {
-            return Inertia::render('Survey/EditSurvey', ['survey' => $survey]);
+        if(!$survey[0]->locked){
+            $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+            if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+            {
+                return Inertia::render('Survey/EditSurvey', ['survey' => $survey]);
+            }
+        }else{
+            return redirect('/surveys/'.$survey[0]->id);   
         }
     }
 
@@ -106,8 +116,6 @@ class SurveyController extends Controller
             $survey->image = $path;
         }
         $survey->update();
-
-        return redirect('/surveys/'.$survey->id);   
         }
     }
 
@@ -117,13 +125,50 @@ class SurveyController extends Controller
     public function destroy($id)
     {
         $survey = Survey::find($id);
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        if(Auth::user()->can('admin') || $survey->id_user == Auth::id())
         {
             if($survey->image != null){
                 Storage::disk('public')->delete($survey->image);
             }
             $survey->delete();
+            foreach(User::where('id_survey',$id) as $user){
+                $user->delete();
+            }
         }
+    }
+
+    /**
+     * Show all the answer from survey
+     */
+    public function answer($id)
+    {
+        $survey = Survey::where('id', $id)->get();
+        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        {
+            $survey['userAnswer'] = UserResource::collection(User::with('answers')->where('id_survey', $id)->paginate(5));
+            $survey['questions'] = Question::where('id_survey',$id)->get();
+            if(Auth::user()->can('admin')){
+                return Inertia::render('Admin/AnswerSurvey', ['survey' => $survey]);
+            }else{
+                return Inertia::render('Survey/AnswerSurvey', ['survey' => $survey]);
+            }
+        }
+    }
+
+    /**
+     * Display the survey for getting answers
+     */
+    public function getAnswer($id)
+    {
+        $survey = Survey::where('id', $id)->get();
+        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+        $survey['questions'] = Question::where('id_survey',$id)->get();
+        foreach($survey['questions'] as $question){
+            if($question->type != "Text")
+                $question['answer'] = Answer::where('id_question', $question->id)->get();
+        }
+        return Inertia::render('Survey/GetAnswerSurvey', ['survey' => $survey]);
     }
 
 }

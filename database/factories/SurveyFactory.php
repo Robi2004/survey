@@ -21,6 +21,7 @@ class SurveyFactory extends Factory
             'title' => $this->faker->unique()->lexify('SurTitle-???'),
             'image' => $this->faker->unique()->lexify('SurImage-???'),
             'id_user' => User::inRandomOrder()->first(),
+            'locked' => false,
         ];
     }
 }
