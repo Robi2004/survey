@@ -3,6 +3,7 @@
 use App\Models\Survey;
 use App\Models\Question;
 use App\Models\Answer;
+use App\Models\User;
 use Database\Seeders\PermissionRolesSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -127,12 +128,29 @@ test('displays answers for a survey', function () {
     $user = loginAsUser();
     $survey = Survey::factory()->create(['id_user' => $user->id]);
     $question = Question::factory()->create(['id_survey' => $survey->id]);
-    $answer = Answer::factory()->create(['id_question' => $question->id]);
+    Answer::factory()->create(['id_question' => $question->id]);
 
     $this->get("/surveys/{$survey->id}/answer")
         ->assertStatus(200)
         ->assertInertia(fn (Assert $page) => $page
             ->component('Survey/AnswerSurvey')
+            ->has('survey.questions', 1)
+        );
+});
+
+test('displays survey for getting answers', function () {
+    $this->seed(PermissionRolesSeeder::class);
+    loginAsUser();
+
+    $user = User::factory()->create();
+    $survey = Survey::factory()->create(['id_user' => $user->id]);
+    $question = Question::factory()->create(['id_survey' => $survey->id]);
+    Answer::factory()->create(['id_question' => $question->id]);
+
+    $this->get("/surveys/{$survey->id}/getAnswer")
+        ->assertStatus(200)
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Survey/GetAnswerSurvey')
             ->has('survey.questions', 1)
         );
 });

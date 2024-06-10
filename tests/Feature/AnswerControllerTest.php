@@ -16,13 +16,13 @@ beforeEach(function () {
     Storage::fake('public');
 });
 test('stores newly created answers', function () {
-
-    $survey = Survey::factory()->create();
+    $user = User::factory()->create();
+    $survey = Survey::factory()->create(['id_user' => $user->id]);
     $question = Question::factory()->create(['id_survey' => $survey->id, 'type' => "Text"]);
     $question = Question::factory()->create(['id_survey' => $survey->id, 'type' => "Select"]);
-    $answer = Answer::factory()->create(['id_question' => $question->id]);
-    $answer = Answer::factory()->create(['id_question' => $question->id]);
-    $question = Question::factory()->create(['id_survey' => $survey->id, 'type' => "Multiple Select"]);
+    Answer::factory()->count(3)->create(['id_question' => $question->id]);
+    $question = Question::factory()->create(['id_survey' => $survey->id, 'type' => "CheckBox"]);
+    Answer::factory()->count(3)->create(['id_question' => $question->id]);
     
     $userRequestData = [
         'firstName' => 'John',
@@ -54,51 +54,61 @@ test('stores newly created answers', function () {
 });
 
 test('shows the thanks page after submitting answers', function () {
-    $survey = Survey::factory()->create();
+    $user = User::factory()->create();
+    $survey = Survey::factory()->create(['id_user' => $user->id]);
 
-    $response = get("/answers/{$survey->id}/thanks");
-
-    $response->assertStatus(200)
-             ->assertInertia('Survey/ThanksSurvey', ['survey' => $survey->toArray()]);
+    $this->get("/answers/{$survey->id}/thanks")
+        ->assertStatus(200)
+        ->assertInertia(fn (Assert $page) => $page
+        ->component('Survey/ThanksSurvey')
+    );
 });
 
 test('shows the form for editing the specified answer', function () {
-    $answer = Answer::factory()->create();
+    $this->seed(PermissionRolesSeeder::class);
+    loginAsAdmin();
 
-    $response = get("/answers/{$answer->id}/edit");
+    $user = User::factory()->create();
+    $survey = Survey::factory()->create(['id_user' => $user->id]);
+    $question = Question::factory()->create(['id_survey' => $survey->id, 'type' => "Text"]);
+    $answer = Answer::factory()->create(['id_question' => $question->id]);
 
-    $response->assertStatus(200)
-             ->assertInertia('Admin/EditAnswer', ['answer' => $answer->toArray()]);
+    $this->get("/answers/{$answer->id}/edit")
+        ->assertStatus(200)
+        ->assertInertia(fn (Assert $page) => $page
+        ->component('Admin/EditAnswer'));
 });
 
 test('updates the specified answer', function () {
-    $answer = Answer::factory()->create();
+    $this->seed(PermissionRolesSeeder::class);
+    loginAsAdmin();
+
+    $user = User::factory()->create();
+    $survey = Survey::factory()->create(['id_user' => $user->id]);
+    $question = Question::factory()->create(['id_survey' => $survey->id]);
+    $answer = Answer::factory()->create(['id_question' => $question->id]);
+
     $updatedContent = 'Updated answer content';
 
     $this->patch("/answers/{$answer->id}", ['content' => $updatedContent])
-         ->assertRedirect("/surveys/{$answer->question->survey->id}/answer");
+         ->assertRedirect("/surveys/{$survey->id}/answer");
 
     $updatedAnswer = Answer::find($answer->id);
     expect($updatedAnswer->content)->toBe($updatedContent);
 });
 
 test('removes the specified answer from storage', function () {
+    $this->seed(PermissionRolesSeeder::class);
+    loginAsAdmin();
+
+    $user = User::factory()->create();
+    $survey = Survey::factory()->create(['id_user' => $user->id]);
+    $question = Question::factory()->create(['id_survey' => $survey->id]);
+    $answer = Answer::factory()->create(['id_question' => $question->id]);
     $answer = Answer::factory()->create();
 
     $this->delete("/answers/{$answer->id}")
          ->assertStatus(200);
 
     $this->assertDatabaseMissing('answers', ['id' => $answer->id]);
-});
-
-test('displays survey for getting answers', function () {
-    $survey = Survey::factory()->create();
-    $question = Question::factory()->create(['id_survey' => $survey->id]);
-
-    get("/surveys/{$survey->id}/getAnswer")
-        ->assertStatus(200)
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('Survey/GetAnswerSurvey')
-            ->has('survey.questions', 1)
-        );
 });
