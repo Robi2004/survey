@@ -105,17 +105,23 @@ class SurveyController extends Controller
     public function update(UpdateSurveyRequest $request, $id)
     {
         $survey = Survey::find($id);
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
-        {
-        $request->validated();
-        $survey->title = $request->title;
-        if($request->hasFile('image')){
-            $path = Storage::disk('public')->putFile('image', new File($request->file('image')));
-            if($survey->image != null)
-                Storage::disk('public')->delete($survey->image);
-            $survey->image = $path;
-        }
-        $survey->update();
+    
+        if (Auth::user()->can('admin') || $survey->id_user == Auth::id()) {
+            $validatedData = $request->validated();
+    
+            $survey->title = $validatedData['title'];
+    
+            if ($request->hasFile('image')) {
+                $path = Storage::disk('public')->putFile('image', $request->file('image'));
+    
+                if ($survey->image != null) {
+                    Storage::disk('public')->delete($survey->image);
+                }
+    
+                $survey->image = $path;
+            }
+    
+            $survey->save();
         }
     }
 
@@ -134,7 +140,10 @@ class SurveyController extends Controller
             foreach(User::where('id_survey',$id) as $user){
                 $user->delete();
             }
+            return response()->json(['message' => 'Le sondage a été supprimé'], 200);
         }
+
+        return response()->json(['error' => 'Vous n\'êtes pas autoriser à supprimer cette élément'], 403);
     }
 
     /**

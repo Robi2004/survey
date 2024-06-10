@@ -1,39 +1,57 @@
 <?php
 
-namespace Tests\Feature;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
 use Laravel\Jetstream\Jetstream;
-use Tests\TestCase;
+use Database\Seeders\PermissionRolesSeeder;
 
-class RegistrationTest extends TestCase
-{
-    use RefreshDatabase;
+test('registration screen can be rendered', function () {
+    $response = $this->get('/register');
 
-    public function test_registration_screen_can_be_rendered(): void
-    {
-        $response = $this->get('/register');
+    $response->assertStatus(200);
+})->skip(function () {
+    return ! Features::enabled(Features::registration());
+}, 'Registration support is not enabled.');
 
-        $response->assertStatus(200);
-    }
+test('registration screen cannot be rendered if support is disabled', function () {
+    $response = $this->get('/register');
 
-    public function test_new_users_can_register(): void
-    {
-        if (! Features::enabled(Features::registration())) {
-            $this->markTestSkipped('Registration support is not enabled.');
-        }
+    $response->assertStatus(404);
+})->skip(function () {
+    return Features::enabled(Features::registration());
+}, 'Registration support is enabled.');
 
-        $response = $this->post('/register', [
-            'lastName' => 'Test User',
-            'firstName' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
-        ]);
+test('new users can register', function () {
+    $this->seed(PermissionRolesSeeder::class);
+    $response = $this->post('/register', [
+        'firstName' => 'Test User',
+        'lastName' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+        'role' => 'user'
+    ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('home', absolute: false));
-    }
-}
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('home', absolute: false));
+})->skip(function () {
+    return ! Features::enabled(Features::registration());
+}, 'Registration support is not enabled.');
+
+test('admin can register', function () {
+    $this->seed(PermissionRolesSeeder::class);
+    $response = $this->post('/register', [
+        'firstName' => 'admim',
+        'lastName' => 'admim',
+        'email' => 'admin@admim.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+        'role' => 'admin'
+    ]);
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('home', absolute: false));
+})->skip(function () {
+    return ! Features::enabled(Features::registration());
+}, 'Registration support is not enabled.');
+

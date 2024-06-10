@@ -9,6 +9,8 @@ use App\Http\Resources\QuestionResource;
 use App\Models\Answer;
 use App\Models\Survey;
 use Inertia\Inertia;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends Controller
 {
@@ -130,6 +132,14 @@ class QuestionController extends Controller
     public function destroy($id)
     {
         $question = Question::find($id);
-        $question->delete();
+        $survey = Survey::where('id', $question->id_survey)->get();
+        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+        {
+            $question = Question::find($id);
+            $question->delete();
+            return response()->json(['message' => 'La question à été supprimé'], 200);
+        }
+
+        return response()->json(['error' => 'Vous n\'êtes pas autoriser à supprimer cette élément'], 403);
     }
 }

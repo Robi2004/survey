@@ -6,15 +6,8 @@ use App\Models\Survey;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Answer;
-use App\Models\Question;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Jetstream\Jetstream;
-use Spatie\Permission\Models\Role;
 use Inertia\Inertia;
 
 class UserController extends Controller
