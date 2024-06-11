@@ -15,6 +15,7 @@ beforeEach(function () {
     // Reset the storage fake for each test
     Storage::fake('public');
 });
+
 test('stores newly created answers', function () {
     $user = User::factory()->create();
     $survey = Survey::factory()->create(['id_user' => $user->id]);

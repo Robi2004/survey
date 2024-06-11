@@ -152,15 +152,19 @@ class SurveyController extends Controller
     public function answer($id)
     {
         $survey = Survey::where('id', $id)->get();
-        $survey['user'] = User::where('id',$survey[0]->id_user)->get();
-        if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
-        {
-            $survey['userAnswer'] = UserResource::collection(User::with('answers')->where('id_survey', $id)->paginate(5));
-            $survey['questions'] = Question::where('id_survey',$id)->get();
-            if(Auth::user()->can('admin')){
-                return Inertia::render('Admin/AnswerSurvey', ['survey' => $survey]);
-            }else{
-                return Inertia::render('Survey/AnswerSurvey', ['survey' => $survey]);
+        if($survey != null){
+
+        }else{
+            $survey['user'] = User::where('id',$survey[0]->id_user)->get();
+            if(Auth::user()->can('admin') || $survey[0]->id_user == Auth::id())
+            {
+                $survey['userAnswer'] = UserResource::collection(User::with('answers')->where('id_survey', $id)->paginate(5));
+                $survey['questions'] = Question::where('id_survey',$id)->get();
+                if(Auth::user()->can('admin')){
+                    return Inertia::render('Admin/AnswerSurvey', ['survey' => $survey]);
+                }else{
+                    return Inertia::render('Survey/AnswerSurvey', ['survey' => $survey]);
+                }
             }
         }
     }

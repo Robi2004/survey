@@ -29,7 +29,7 @@ defineProps({
                                 <h1 class="sm:text-3xl text-2xl text-center font-medium title-font text-gray-900">{{ user.data[0].email }}</h1>   
                             </div>
                             <div class="flex flex-col w-full mb-12">
-                                <h1 class="sm:text-2xl text-2xl text-center font-medium title-font text-gray-900">Inscription créer le : {{ moment(user.data[0].creation_date).format("DD.MM.YYYY à hh:mm:ss") }}</h1>   
+                                <h1 class="sm:text-2xl text-2xl text-center font-medium title-font text-gray-900">Inscription créée le : {{ moment(user.data[0].creation_date).format("DD.MM.YYYY à hh:mm:ss") }}</h1>   
                             </div>
                         </div>
                     </div>
